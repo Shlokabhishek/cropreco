@@ -36,7 +36,7 @@
             margin: -40px -40px 40px -40px;
             border-radius: 0;
         }
-        ok
+        
         .cover-page h1 {
             font-size: 3em;
             margin-bottom: 20px;
@@ -427,18 +427,24 @@
         <pre><code>crop-recommender/
 ├── src/                          # Frontend Source
 │   ├── components/
-│   │   ├── Auth/                 # Login/Registration
+│   │   ├── Auth/                 # Login/Registration + Google OAuth
 │   │   ├── CropRecommendations/  # Crop suggestions
+│   │   ├── CropsToAvoid/         # Risk analysis - crops to avoid
 │   │   ├── FarmerProfile/        # User profile management
+│   │   ├── LanguageSelector/     # Multi-language dropdown
 │   │   ├── MarketTrends/         # Market data display
 │   │   ├── PriceAnalysis/        # Price charts & analysis
 │   │   ├── SoilSuitability/      # Soil compatibility
 │   │   ├── WeatherTrends/        # Weather forecasts
 │   │   └── shared/               # Reusable UI components
+│   ├── i18n/                     # Internationalization
+│   │   ├── translations.ts       # 10 Indian languages
+│   │   └── LanguageContext.tsx   # Language state provider
 │   ├── hooks/                    # Custom React hooks
 │   ├── pages/                    # Page components
 │   ├── services/                 # API service layer
 │   │   ├── api.ts                # Backend API integration
+│   │   ├── firebase.ts           # Google OAuth configuration
 │   │   ├── recommender.ts        # Recommendation engine
 │   │   └── weather.ts            # Weather utilities
 │   ├── state/                    # Redux store & slices
@@ -473,6 +479,8 @@
             <span class="tech-badge">TypeScript 5.9</span>
             <span class="tech-badge">Redux Toolkit</span>
             <span class="tech-badge">Vite 7.3</span>
+            <span class="tech-badge">Firebase Auth</span>
+            <span class="tech-badge">i18n (10 Languages)</span>
             <span class="tech-badge">Recharts</span>
             <span class="tech-badge">Plotly.js</span>
             <span class="tech-badge">TensorFlow.js</span>
@@ -498,6 +506,11 @@
                 <td>Redux Toolkit</td>
                 <td>1.9.7</td>
                 <td>Centralized state management</td>
+            </tr>
+            <tr>
+                <td>Firebase</td>
+                <td>10.7.1</td>
+                <td>Google OAuth authentication</td>
             </tr>
             <tr>
                 <td>Vite</td>
@@ -1896,7 +1909,21 @@ npm run dev:all
 <span class="comment"># Frontend: http://localhost:5173</span>
 <span class="comment"># Backend:  http://localhost:3001</span></code></pre>
 
-        <h3>12.3 Future Enhancements</h3>
+        <h3>12.3 Implemented Features (v1.1)</h3>
+
+        <div class="info-box" style="background: #e8f5e9; border-left-color: #2e7d32;">
+            <h4>✅ Recently Added Features</h4>
+            <ul>
+                <li><strong>Multi-language Support (i18n)</strong> - 10 Indian regional languages: English, Hindi, Marathi, Telugu, Tamil, Kannada, Bengali, Gujarati, Punjabi, Malayalam</li>
+                <li><strong>Crops to Avoid Analysis</strong> - Risk assessment showing crops farmers should avoid based on soil, weather, season, market, and profit margin analysis</li>
+                <li><strong>Google OAuth</strong> - Sign in with any Google account via Firebase Authentication</li>
+                <li><strong>State-to-Language Mapping</strong> - Automatic language suggestions based on farmer's state</li>
+                <li><strong>Risk Level Indicators</strong> - High/Medium risk badges for avoided crops</li>
+                <li><strong>Alternative Crop Suggestions</strong> - Recommends safer alternatives for risky crops</li>
+            </ul>
+        </div>
+
+        <h3>12.4 Future Enhancements</h3>
 
         <div class="info-box">
             <h4>Planned Features</h4>
@@ -1911,7 +1938,6 @@ npm run dev:all
                 <li>WebSocket real-time updates</li>
                 <li>Admin panel for data management</li>
                 <li>Mobile app with React Native</li>
-                <li>Multi-language support (i18n)</li>
                 <li>Offline mode (PWA)</li>
             </ul>
         </div>
@@ -1919,8 +1945,9 @@ npm run dev:all
         <!-- Footer -->
         <div style="margin-top: 60px; padding-top: 20px; border-top: 2px solid #ddd; text-align: center; color: #666;">
             <p><strong>Crop Recommender System - Complete Documentation</strong></p>
-            <p>Version 1.0 | January 2026</p>
-            <p>Full-Stack Application: React + Node.js + Express + SQLite</p>
+            <p>Version 1.1 | January 2026</p>
+            <p>Full-Stack Application: React + Node.js + Express + SQLite + Firebase</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Features: Multi-language (10 Indian languages) | Crops to Avoid Analysis | Google OAuth</p>
         </div>
     </div>
 </body>

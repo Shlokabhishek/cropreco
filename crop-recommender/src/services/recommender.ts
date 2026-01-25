@@ -225,7 +225,7 @@ export function parseCSVData(csvText: string): CropData[] {
 // Recommend farming type based on profile and conditions
 export function recommendFarmingType(
   profile: Profile,
-  weatherConditions?: { avgTemp: number; rainfall: number }
+  _weatherConditions?: { avgTemp: number; rainfall: number }
 ): FarmingType[] {
   const farmingTypes: FarmingType[] = [];
   
@@ -540,7 +540,7 @@ export function recommendCrops(
 // Helper function to recommend crops for multiple/intercropping
 function getMultipleCropsRecommendation(
   recommendations: CropRecommendation[], 
-  profile: Profile
+  _profile: Profile
 ): CropRecommendation[] {
   // Define crop compatibility for intercropping and rotation
   const companionCrops: Record<string, string[]> = {
