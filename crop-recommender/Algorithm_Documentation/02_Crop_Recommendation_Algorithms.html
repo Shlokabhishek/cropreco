@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+    <meta charset='utf-8'>
+    <title>Crop Recommendation Algorithms</title>
+    <style>
+        body { font-family: 'Calibri', Arial, sans-serif; line-height: 1.6; margin: 40px; }
+        h1 { color: #2E7D32; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; font-size: 28pt; }
+        h2 { color: #388E3C; margin-top: 30px; font-size: 20pt; border-bottom: 2px solid #81C784; padding-bottom: 5px; }
+        h3 { color: #43A047; margin-top: 20px; font-size: 16pt; }
+        h4 { color: #66BB6A; margin-top: 15px; font-size: 14pt; }
+        p { text-align: justify; margin: 10px 0; font-size: 11pt; }
+        ul, ol { margin: 10px 0; padding-left: 30px; }
+        li { margin: 8px 0; font-size: 11pt; }
+        .section { margin: 20px 0; padding: 15px; background-color: #F1F8E9; border-left: 4px solid #4CAF50; }
+        .algorithm-box { background-color: #E8F5E9; padding: 15px; margin: 15px 0; border: 1px solid #4CAF50; border-radius: 5px; }
+        .formula { background-color: #FFF9C4; padding: 10px; margin: 10px 0; font-family: 'Courier New', monospace; border-left: 3px solid #FBC02D; font-size: 10pt; }
+        .code-block { background-color: #263238; color: #AEDAA6; padding: 15px; margin: 15px 0; font-family: 'Courier New', monospace; border-radius: 5px; font-size: 9pt; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th { background-color: #4CAF50; color: white; padding: 12px; text-align: left; font-size: 11pt; }
+        td { border: 1px solid #ddd; padding: 10px; font-size: 10pt; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .highlight { background-color: #FFEB3B; padding: 2px 5px; }
+        .note { background-color: #E3F2FD; padding: 10px; margin: 10px 0; border-left: 3px solid #2196F3; }
+        .warning { background-color: #FFF3E0; padding: 10px; margin: 10px 0; border-left: 3px solid #FF9800; }
+    </style>
+</head>
+<body>
+    <h1>🌾 CROP RECOMMENDATION ALGORITHMS</h1>
+    <h2>Detailed Technical Documentation</h2>
+
+    <h2>1. MAIN RECOMMENDATION ALGORITHM</h2>
+    
+    <h3>1.1 Algorithm Overview</h3>
+    <p>
+        The <strong>recommendCrops()</strong> function is the core algorithm that generates personalized crop recommendations 
+        based on farmer profile and environmental conditions. It processes historical agricultural data, applies multiple 
+        filtering strategies, calculates economic viability, and ranks crops using a sophisticated scoring system.
+    </p>
+
+    <div class="algorithm-box">
+        <h3>1.2 Algorithm Inputs</h3>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td>cropData</td>
+                <td>CropData[]</td>
+                <td>Array of historical crop performance records</td>
+                <td>10,000+ records</td>
+            </tr>
+            <tr>
+                <td>profile.state</td>
+                <td>string</td>
+                <td>Farmer's geographical state</td>
+                <td>"Maharashtra"</td>
+            </tr>
+            <tr>
+                <td>profile.acreage</td>
+                <td>number</td>
+                <td>Land size in acres</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>profile.soilType</td>
+                <td>string</td>
+                <td>Soil classification</td>
+                <td>"Loamy"</td>
+            </tr>
+            <tr>
+                <td>profile.budget</td>
+                <td>number</td>
+                <td>Available investment in INR</td>
+                <td>500000</td>
+            </tr>
+            <tr>
+                <td>profile.season</td>
+                <td>string</td>
+                <td>Planting season (optional)</td>
+                <td>"Kharif"</td>
+            </tr>
+            <tr>
+                <td>livePrices</td>
+                <td>Record&lt;string, Price&gt;</td>
+                <td>Current market prices (optional)</td>
+                <td>{ "Rice": 2100 }</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>1.3 Multi-Level Filtering Strategy</h3>
+    <p>The algorithm implements a <strong>cascading filter mechanism</strong> with progressive fallback to ensure recommendations are always available:</p>
+
+    <div class="algorithm-box">
+        <h4>Filter Level 1: State + Season Match (Strictest)</h4>
+        <div class="formula">
+            Filter Condition: (cropState === profileState) AND (cropSeason === profileSeason OR cropSeason === "Whole Year")
+        </div>
+        <p><strong>Purpose:</strong> Find crops perfectly suited to the farmer's location and timing.</p>
+
+        <h4>Filter Level 2: State-Only Match</h4>
+        <div class="formula">
+            Filter Condition: cropState === profileState
+        </div>
+        <p><strong>Fallback Trigger:</strong> If Level 1 returns zero results.</p>
+
+        <h4>Filter Level 3: Partial State Match</h4>
+        <div class="formula">
+            Filter Condition: cropState.includes(profileState) OR profileState.includes(cropState)
+        </div>
+        <p><strong>Purpose:</strong> Handle variations in state naming (e.g., "UP" vs "Uttar Pradesh").</p>
+
+        <h4>Filter Level 4: Season-Only Match</h4>
+        <div class="formula">
+            Filter Condition: cropSeason === profileSeason
+        </div>
+        <p><strong>Purpose:</strong> When state data is unavailable, prioritize seasonal suitability.</p>
+
+        <h4>Filter Level 5: Nationwide Fallback (Most Relaxed)</h4>
+        <div class="formula">
+            Filter Condition: ALL crops from dataset
+        </div>
+        <p><strong>Purpose:</strong> Ensure users always receive recommendations, using most common crops across India.</p>
+    </div>
+
+    <h3>1.4 Data Aggregation Method</h3>
+    <p>After filtering, crops are grouped by name and aggregated using <strong>statistical methods</strong>:</p>
+
+    <div class="algorithm-box">
+        <h4>Median-Based Yield Calculation</h4>
+        <p>Instead of using mean (average), the algorithm uses <strong>median</strong> for yield estimation:</p>
+        <div class="formula">
+            yields = [crop1.yield, crop2.yield, ..., cropN.yield].sort()<br>
+            avgYield = yields[floor(N/2)]
+        </div>
+        <p><strong>Advantage:</strong> Median is robust against outliers and extreme values, providing more reliable estimates.</p>
+
+        <h4>Mean-Based Cost Calculations</h4>
+        <div class="formula">
+            avgFertilizer = sum(crops.fertilizer) / count(crops)<br>
+            avgPesticide = sum(crops.pesticide) / count(crops)
+        </div>
+        <p><strong>Rationale:</strong> Cost inputs are typically more consistent and benefit from averaging.</p>
+    </div>
+
+    <h3>1.5 Economic Modeling Algorithm</h3>
+    
+    <h4>1.5.1 Cost Calculation</h4>
+    <p>The system calculates per-hectare costs with minimum thresholds to ensure realistic estimates:</p>
+
+    <div class="formula">
+        fertilizerCost = max(avgFertilizer × 0.05, 2000) INR/hectare<br>
+        pesticideCost = max(avgPesticide × 0.1, 1000) INR/hectare<br>
+        laborCost = 15000 INR/hectare (fixed)<br>
+        seedCost = 5000 INR/hectare (fixed)<br>
+        <br>
+        <strong>costPerHectare = fertilizerCost + pesticideCost + laborCost + seedCost</strong><br>
+        <strong>totalCost = costPerHectare × acreage</strong>
+    </div>
+
+    <h4>1.5.2 Revenue Estimation</h4>
+    <div class="formula">
+        yieldInQuintals = avgYield × 10 (convert tonnes to quintals)<br>
+        marketPrice = livePrices[crop] OR MSP[crop] OR DEFAULT_PRICE<br>
+        revenuePerHectare = yieldInQuintals × marketPrice<br>
+        <strong>totalRevenue = revenuePerHectare × acreage</strong>
+    </div>
+
+    <h4>1.5.3 Profit Calculation</h4>
+    <div class="formula">
+        <strong>profit = totalRevenue - totalCost</strong><br>
+        ROI = profit / totalCost (when totalCost > 0)
+    </div>
+
+    <h3>1.6 Composite Scoring Algorithm</h3>
+    <p>Each crop receives a <strong>weighted composite score</strong> based on four key factors:</p>
+
+    <div class="algorithm-box">
+        <h4>Budget Feasibility Score (Weight: 30%)</h4>
+        <div class="formula">
+            budgetScore = 1.0 if totalCost ≤ budget<br>
+            budgetScore = max(0, budget / totalCost) if totalCost > budget
+        </div>
+        <p><strong>Purpose:</strong> Prioritize crops within farmer's financial capacity.</p>
+
+        <h4>Profitability Score (Weight: 30%)</h4>
+        <div class="formula">
+            profitScore = 0 if profit ≤ 0<br>
+            profitScore = min(profit / 200000, 1.0) if profit > 0
+        </div>
+        <p><strong>Purpose:</strong> Favor crops with higher profit potential (normalized to ₹2 lakh).</p>
+
+        <h4>Yield Score (Weight: 20%)</h4>
+        <div class="formula">
+            yieldScore = min(avgYield / 10, 1.0)
+        </div>
+        <p><strong>Purpose:</strong> Account for productivity per unit area (normalized to 10 tonnes/hectare).</p>
+
+        <h4>ROI Score (Weight: 20%)</h4>
+        <div class="formula">
+            roiScore = min(profit / totalCost, 1.0) when totalCost > 0<br>
+            roiScore = 0 when totalCost = 0
+        </div>
+        <p><strong>Purpose:</strong> Measure investment efficiency.</p>
+
+        <h4>Final Composite Score</h4>
+        <div class="formula">
+            <strong>finalScore = (budgetScore × 0.3) + (profitScore × 0.3) + (yieldScore × 0.2) + (roiScore × 0.2)</strong><br>
+            Range: 0.0 to 1.0
+        </div>
+    </div>
+
+    <h3>1.7 Budget Constraint Relaxation</h3>
+    <p>The algorithm implements progressive budget relaxation to ensure sufficient recommendations:</p>
+
+    <div class="algorithm-box">
+        <h4>Stage 1: Strict Budget (1.5x)</h4>
+        <div class="formula">
+            Select crops where: estimatedCost ≤ budget × 1.5
+        </div>
+        <p>Allows slightly over-budget options if they offer exceptional value.</p>
+
+        <h4>Stage 2: Moderate Relaxation (3x)</h4>
+        <div class="formula">
+            If Stage 1 results < 5 crops:<br>
+            Select crops where: estimatedCost ≤ budget × 3
+        </div>
+
+        <h4>Stage 3: Best Available</h4>
+        <div class="formula">
+            If Stage 2 results < 3 crops:<br>
+            Return top crops sorted by: (profit > 0) ? score : -infinity
+        </div>
+        <p>Prioritizes profitable crops regardless of budget, sorted by composite score.</p>
+    </div>
+
+    <h3>1.8 Algorithm Output</h3>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Crop name</td>
+        </tr>
+        <tr>
+            <td>yield</td>
+            <td>number</td>
+            <td>Expected total yield in tonnes</td>
+        </tr>
+        <tr>
+            <td>estimatedRevenue</td>
+            <td>number</td>
+            <td>Projected revenue in INR</td>
+        </tr>
+        <tr>
+            <td>estimatedCost</td>
+            <td>number</td>
+            <td>Total input costs in INR</td>
+        </tr>
+        <tr>
+            <td>profit</td>
+            <td>number</td>
+            <td>Net profit (revenue - cost) in INR</td>
+        </tr>
+        <tr>
+            <td>score</td>
+            <td>number</td>
+            <td>Composite suitability score (0-1)</td>
+        </tr>
+        <tr>
+            <td>season</td>
+            <td>string</td>
+            <td>Recommended planting season</td>
+        </tr>
+        <tr>
+            <td>livePrice</td>
+            <td>number</td>
+            <td>Current market price per quintal</td>
+        </tr>
+        <tr>
+            <td>priceSource</td>
+            <td>string</td>
+            <td>"AGMARKNET", "MSP 2024-25", etc.</td>
+        </tr>
+    </table>
+
+    <h2>2. COMPANION CROPPING ALGORITHM</h2>
+    
+    <h3>2.1 Multiple Crops Recommendation</h3>
+    <p>
+        When farmers enable <strong>multipleCrops</strong> mode, the system applies the 
+        <strong>getMultipleCropsRecommendation()</strong> algorithm to identify compatible crop combinations 
+        for intercropping and crop rotation.
+    </p>
+
+    <div class="algorithm-box">
+        <h3>2.2 Companion Crop Database</h3>
+        <p>The algorithm uses a predefined compatibility matrix based on agricultural research:</p>
+        <div class="code-block">
+Rice → Compatible with: Pulses, Gram, Moong, Urad<br>
+Wheat → Compatible with: Gram, Mustard, Rapeseed, Linseed<br>
+Maize → Compatible with: Beans, Pulses, Groundnut, Soyabean<br>
+Cotton → Compatible with: Groundnut, Moong, Gram, Cowpea<br>
+Sugarcane → Compatible with: Potato, Onion, Garlic, Turmeric<br>
+Potato → Compatible with: Onion, Cabbage, Peas, Beans<br>
+        </div>
+    </div>
+
+    <h3>2.3 Companion Selection Algorithm</h3>
+    <div class="algorithm-box">
+        <h4>Step 1: Select Primary Crop</h4>
+        <div class="formula">
+            primaryCrop = recommendations[0] (highest scoring crop)
+        </div>
+
+        <h4>Step 2: Find Compatible Crops</h4>
+        <div class="formula">
+            FOR each crop in recommendations:<br>
+            &nbsp;&nbsp;IF crop is companion to any selected crop:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;crop.score = crop.score × 1.1 (10% bonus)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;crop.farmingType = "Intercropping Compatible"<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;ADD crop to selection
+        </div>
+
+        <h4>Step 3: Diversification</h4>
+        <div class="formula">
+            IF selectedCrops.length < 3:<br>
+            &nbsp;&nbsp;ADD high-scoring crops regardless of compatibility
+        </div>
+
+        <h4>Step 4: Return Diverse Portfolio</h4>
+        <div class="formula">
+            RETURN top 6-8 crops (diverse, compatible mix)
+        </div>
+    </div>
+
+    <div class="note">
+        <h3>📌 Benefits of Companion Cropping</h3>
+        <ul>
+            <li><strong>Risk Diversification:</strong> Reduces dependency on single crop</li>
+            <li><strong>Soil Health:</strong> Legumes fix nitrogen for companion crops</li>
+            <li><strong>Pest Management:</strong> Natural pest control through crop diversity</li>
+            <li><strong>Income Stability:</strong> Staggered harvests ensure continuous cash flow</li>
+            <li><strong>Resource Optimization:</strong> Better utilization of land, water, and labor</li>
+        </ul>
+    </div>
+
+    <h2>3. ALGORITHM COMPLEXITY ANALYSIS</h2>
+    <table>
+        <tr>
+            <th>Operation</th>
+            <th>Time Complexity</th>
+            <th>Space Complexity</th>
+        </tr>
+        <tr>
+            <td>CSV Parsing</td>
+            <td>O(n)</td>
+            <td>O(n)</td>
+        </tr>
+        <tr>
+            <td>State Filtering</td>
+            <td>O(n)</td>
+            <td>O(m) where m ≤ n</td>
+        </tr>
+        <tr>
+            <td>Grouping by Crop Name</td>
+            <td>O(m)</td>
+            <td>O(k) where k = unique crops</td>
+        </tr>
+        <tr>
+            <td>Median Calculation</td>
+            <td>O(k × p × log p)</td>
+            <td>O(p) where p = records per crop</td>
+        </tr>
+        <tr>
+            <td>Score Computation</td>
+            <td>O(k)</td>
+            <td>O(k)</td>
+        </tr>
+        <tr>
+            <td>Sorting</td>
+            <td>O(k × log k)</td>
+            <td>O(k)</td>
+        </tr>
+        <tr>
+            <td><strong>Overall</strong></td>
+            <td><strong>O(n + k × log k)</strong></td>
+            <td><strong>O(n)</strong></td>
+        </tr>
+    </table>
+    <p><em>where n = total records, k = unique crops, m = filtered records, p = avg records per crop</em></p>
+
+    <div class="warning">
+        <h3>⚠️ Algorithm Limitations</h3>
+        <ul>
+            <li>Historical data may not account for climate change impacts</li>
+            <li>Market prices are volatile and predictions have uncertainty</li>
+            <li>Local micro-conditions may differ from state-level data</li>
+            <li>Assumes standard farming practices; organic/precision farming may vary</li>
+            <li>Does not account for farmer's existing equipment or expertise</li>
+        </ul>
+    </div>
+
+    <hr style="margin: 30px 0;">
+    <p style="text-align: center; color: #666; font-size: 9pt;">
+        <em>Detailed technical documentation of crop recommendation algorithms.</em>
+    </p>
+</body>
+</html>

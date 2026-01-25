@@ -1,0 +1,23 @@
+# Files to exclude from Vercel deployment
+
+node_modules/
+.git/
+.env.local
+.env.development.local
+.env.test.local
+
+# Test files
+*.test.ts
+*.test.tsx
+__tests__/
+coverage/
+
+# Documentation
+README.md
+docs/
+
+# Development files
+.eslintrc.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts.map

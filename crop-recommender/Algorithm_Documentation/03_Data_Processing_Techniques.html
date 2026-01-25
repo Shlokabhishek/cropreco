@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+    <meta charset='utf-8'>
+    <title>Data Processing & Normalization Techniques</title>
+    <style>
+        body { font-family: 'Calibri', Arial, sans-serif; line-height: 1.6; margin: 40px; }
+        h1 { color: #2E7D32; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; font-size: 28pt; }
+        h2 { color: #388E3C; margin-top: 30px; font-size: 20pt; border-bottom: 2px solid #81C784; padding-bottom: 5px; }
+        h3 { color: #43A047; margin-top: 20px; font-size: 16pt; }
+        h4 { color: #66BB6A; margin-top: 15px; font-size: 14pt; }
+        p { text-align: justify; margin: 10px 0; font-size: 11pt; }
+        ul, ol { margin: 10px 0; padding-left: 30px; }
+        li { margin: 8px 0; font-size: 11pt; }
+        .section { margin: 20px 0; padding: 15px; background-color: #F1F8E9; border-left: 4px solid #4CAF50; }
+        .algorithm-box { background-color: #E8F5E9; padding: 15px; margin: 15px 0; border: 1px solid #4CAF50; border-radius: 5px; }
+        .formula { background-color: #FFF9C4; padding: 10px; margin: 10px 0; font-family: 'Courier New', monospace; border-left: 3px solid #FBC02D; font-size: 10pt; }
+        .code-block { background-color: #263238; color: #AEDAA6; padding: 15px; margin: 15px 0; font-family: 'Courier New', monospace; border-radius: 5px; font-size: 9pt; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th { background-color: #4CAF50; color: white; padding: 12px; text-align: left; font-size: 11pt; }
+        td { border: 1px solid #ddd; padding: 10px; font-size: 10pt; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .note { background-color: #E3F2FD; padding: 10px; margin: 10px 0; border-left: 3px solid #2196F3; }
+        .example { background-color: #F3E5F5; padding: 15px; margin: 15px 0; border-left: 3px solid #9C27B0; }
+    </style>
+</head>
+<body>
+    <h1>📊 DATA PROCESSING & NORMALIZATION TECHNIQUES</h1>
+    <h2>Data Transformation and Preprocessing Methods</h2>
+
+    <h2>1. DATA LOADING TECHNIQUES</h2>
+    
+    <h3>1.1 CSV Data Loading</h3>
+    <p>
+        The system uses the <strong>DanfoJS</strong> library for efficient data loading and manipulation. 
+        DanfoJS provides pandas-like functionality in JavaScript/TypeScript.
+    </p>
+
+    <div class="algorithm-box">
+        <h4>Loading Method</h4>
+        <div class="code-block">
+import * as dfd from "danfojs";<br>
+<br>
+async function loadDatasets() {<br>
+&nbsp;&nbsp;const cropDf = await dfd.readCSV("/data/crop_dataset.csv");<br>
+&nbsp;&nbsp;const soilDf = await dfd.readCSV("/data/soil_dataset.csv");<br>
+&nbsp;&nbsp;return { cropDf, soilDf };<br>
+}
+        </div>
+        <p><strong>Advantages:</strong></p>
+        <ul>
+            <li>Automatic type inference for columns</li>
+            <li>Handles missing values gracefully</li>
+            <li>Memory-efficient streaming for large files</li>
+            <li>Built-in error handling for malformed CSV</li>
+        </ul>
+    </div>
+
+    <h3>1.2 CSV Parsing Algorithm</h3>
+    <p>For direct CSV parsing without DanfoJS, the system implements a custom parser:</p>
+
+    <div class="algorithm-box">
+        <h4>Custom CSV Parser Implementation</h4>
+        <div class="code-block">
+function parseCSVData(csvText: string): CropData[] {<br>
+&nbsp;&nbsp;const lines = csvText.trim().split('\n');<br>
+&nbsp;&nbsp;const crops: CropData[] = [];<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;for (let i = 1; i < lines.length; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Try tab-separated first, then comma-separated<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let parts = lines[i].split('\t');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (parts.length < 10) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parts = lines[i].split(',');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (parts.length < 10) continue; // Skip invalid rows<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Extract and validate data...<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;return crops;<br>
+}
+        </div>
+
+        <h4>Features of Custom Parser</h4>
+        <ul>
+            <li><strong>Dual Delimiter Support:</strong> Handles both tab (\t) and comma (,) delimiters</li>
+            <li><strong>Data Validation:</strong> Skips rows with insufficient columns</li>
+            <li><strong>Type Conversion:</strong> Converts string values to appropriate numeric types</li>
+            <li><strong>Trimming:</strong> Removes whitespace from all fields</li>
+            <li><strong>Derived Calculations:</strong> Computes per-hectare values from totals</li>
+        </ul>
+    </div>
+
+    <h2>2. NORMALIZATION TECHNIQUES</h2>
+    
+    <h3>2.1 Min-Max Normalization</h3>
+    <p>
+        The <strong>preprocess()</strong> function applies Min-Max normalization to scale numeric features 
+        to a [0, 1] range, enabling fair comparison across different units of measurement.
+    </p>
+
+    <div class="algorithm-box">
+        <h4>Min-Max Normalization Formula</h4>
+        <div class="formula">
+            normalized_value = (value - min) / (max - min)<br>
+            <br>
+            Where:<br>
+            • value = original data point<br>
+            • min = minimum value in the column<br>
+            • max = maximum value in the column<br>
+            • Result range: [0, 1]
+        </div>
+
+        <h4>Normalized Columns</h4>
+        <table>
+            <tr>
+                <th>Original Column</th>
+                <th>Normalized Column</th>
+                <th>Unit</th>
+                <th>Typical Range</th>
+            </tr>
+            <tr>
+                <td>Area</td>
+                <td>Area_norm</td>
+                <td>Hectares</td>
+                <td>1 - 10,000+</td>
+            </tr>
+            <tr>
+                <td>Production</td>
+                <td>Production_norm</td>
+                <td>Tonnes</td>
+                <td>10 - 1,000,000+</td>
+            </tr>
+            <tr>
+                <td>Annual_Rainfall</td>
+                <td>Annual_Rainfall_norm</td>
+                <td>mm</td>
+                <td>200 - 3000</td>
+            </tr>
+            <tr>
+                <td>Fertilizer</td>
+                <td>Fertilizer_norm</td>
+                <td>kg/hectare</td>
+                <td>50 - 500</td>
+            </tr>
+            <tr>
+                <td>Yield</td>
+                <td>Yield_norm</td>
+                <td>tonnes/hectare</td>
+                <td>0.5 - 20</td>
+            </tr>
+            <tr>
+                <td>Price</td>
+                <td>Price_norm</td>
+                <td>INR/quintal</td>
+                <td>500 - 5000</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>2.2 Implementation with DanfoJS</h3>
+    <div class="code-block">
+const numericCols = ["Area", "Production", "Annual_Rainfall", "Fertilizer", "Yield", "Price"];<br>
+<br>
+numericCols.forEach(col => {<br>
+&nbsp;&nbsp;const colSeries = cropDf[col] as dfd.Series;<br>
+&nbsp;&nbsp;const min = colSeries.min();<br>
+&nbsp;&nbsp;const max = colSeries.max();<br>
+&nbsp;&nbsp;const vals = colSeries.values as any[];<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;const norm = vals.map((v: any) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return (max - min) ? (Number(v) - min) / (max - min) : 0;<br>
+&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;cropDf.addColumn(`${col}_norm`, norm);<br>
+});
+    </div>
+
+    <div class="note">
+        <h3>📌 Why Min-Max Normalization?</h3>
+        <ul>
+            <li><strong>Scale Independence:</strong> Prevents features with larger ranges from dominating</li>
+            <li><strong>Interpretability:</strong> Normalized values are easy to interpret (0 = minimum, 1 = maximum)</li>
+            <li><strong>Algorithm Compatibility:</strong> Many ML algorithms perform better with normalized inputs</li>
+            <li><strong>Weighted Combinations:</strong> Enables meaningful weighted averages across features</li>
+        </ul>
+    </div>
+
+    <h2>3. DATA TRANSFORMATION TECHNIQUES</h2>
+
+    <h3>3.1 Exploding Multi-Value Columns</h3>
+    <p>
+        The soil dataset contains comma-separated crop lists in the <strong>Suitable_Crops</strong> column. 
+        The preprocessing pipeline "explodes" these into individual rows for easier joining.
+    </p>
+
+    <div class="algorithm-box">
+        <h4>Explosion Algorithm</h4>
+        <div class="code-block">
+// Input: soilDf with row: ["Loamy", "High", "Rice,Wheat,Maize", "50-100"]<br>
+<br>
+const exploded: any[] = [];<br>
+const soilValues = soilDf.values as any[][];<br>
+<br>
+soilValues.forEach(row => {<br>
+&nbsp;&nbsp;const [soilType, soilQuality, suitableCrops, fertRange] = row;<br>
+&nbsp;&nbsp;const crops = String(suitableCrops).split(",").map(c => c.trim());<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;crops.forEach(crop => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;exploded.push({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Soil_Type: soilType,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Soil_Quality: soilQuality,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crop: crop,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fert_Range: fertRange<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br>
+});<br>
+<br>
+const soilExploded = new dfd.DataFrame(exploded);
+        </div>
+
+        <h4>Transformation Example</h4>
+        <table>
+            <tr>
+                <th colspan="4">Before Explosion (1 row)</th>
+            </tr>
+            <tr>
+                <th>Soil_Type</th>
+                <th>Soil_Quality</th>
+                <th>Suitable_Crops</th>
+                <th>Fert_Range</th>
+            </tr>
+            <tr>
+                <td>Loamy</td>
+                <td>High</td>
+                <td>Rice,Wheat,Maize</td>
+                <td>50-100</td>
+            </tr>
+        </table>
+
+        <table style="margin-top: 20px;">
+            <tr>
+                <th colspan="4">After Explosion (3 rows)</th>
+            </tr>
+            <tr>
+                <th>Soil_Type</th>
+                <th>Soil_Quality</th>
+                <th>Crop</th>
+                <th>Fert_Range</th>
+            </tr>
+            <tr>
+                <td>Loamy</td>
+                <td>High</td>
+                <td>Rice</td>
+                <td>50-100</td>
+            </tr>
+            <tr>
+                <td>Loamy</td>
+                <td>High</td>
+                <td>Wheat</td>
+                <td>50-100</td>
+            </tr>
+            <tr>
+                <td>Loamy</td>
+                <td>High</td>
+                <td>Maize</td>
+                <td>50-100</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>3.2 DataFrame Merging</h3>
+    <p>After explosion, crop and soil datasets are merged using an <strong>inner join</strong> on the Crop column:</p>
+
+    <div class="algorithm-box">
+        <div class="formula">
+            merged = INNER JOIN cropDf AND soilExploded ON Crop<br>
+            <br>
+            Result: Combined dataset with crop features + soil compatibility
+        </div>
+
+        <div class="code-block">
+const merged = dfd.merge({<br>
+&nbsp;&nbsp;left: cropDf,<br>
+&nbsp;&nbsp;right: soilExploded,<br>
+&nbsp;&nbsp;on: ["Crop"],<br>
+&nbsp;&nbsp;how: "inner"<br>
+}) as dfd.DataFrame;
+        </div>
+
+        <h4>Join Types Comparison</h4>
+        <table>
+            <tr>
+                <th>Join Type</th>
+                <th>Behavior</th>
+                <th>Use Case</th>
+            </tr>
+            <tr>
+                <td><strong>INNER</strong> (Used)</td>
+                <td>Keep only rows with matches in both datasets</td>
+                <td>Ensure all recommended crops have soil data</td>
+            </tr>
+            <tr>
+                <td>LEFT</td>
+                <td>Keep all crop rows, null for missing soil data</td>
+                <td>When crop data is comprehensive</td>
+            </tr>
+            <tr>
+                <td>RIGHT</td>
+                <td>Keep all soil rows, null for missing crop data</td>
+                <td>When soil data is comprehensive</td>
+            </tr>
+            <tr>
+                <td>OUTER</td>
+                <td>Keep all rows from both, null where no match</td>
+                <td>Maximum data retention</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>4. FEATURE ENGINEERING</h2>
+
+    <h3>4.1 Soil Suitability Score</h3>
+    <p>A derived feature that quantifies soil-crop compatibility:</p>
+
+    <div class="algorithm-box">
+        <div class="formula">
+            Soil_Score = 0.5 (default baseline)<br>
+            <br>
+            // Can be enhanced with:<br>
+            IF soilQuality == "High": Soil_Score += 0.3<br>
+            IF soilQuality == "Medium": Soil_Score += 0.15<br>
+            IF fertilizer_in_optimal_range: Soil_Score += 0.2
+        </div>
+
+        <div class="code-block">
+const soilScore = Array(merged.shape[0]).fill(0.5);<br>
+merged.addColumn("Soil_Score", soilScore);
+        </div>
+    </div>
+
+    <h3>4.2 Market Score</h3>
+    <p>A composite metric combining production volume, yield, and price:</p>
+
+    <div class="algorithm-box">
+        <div class="formula">
+            Market_Score = (0.5 × Production_norm) + (0.4 × Yield_norm) + (0.1 × Price_norm)<br>
+            <br>
+            Weights Rationale:<br>
+            • Production (50%): Indicates market demand and scalability<br>
+            • Yield (40%): Reflects productivity efficiency<br>
+            • Price (10%): Captures market value
+        </div>
+
+        <div class="code-block">
+const prodVals = merged["Production_norm"].values as number[];<br>
+const yieldVals = merged["Yield_norm"].values as number[];<br>
+const priceVals = (merged["Price_norm"]?.values ?? []) as number[];<br>
+<br>
+const marketScore = prodVals.map((p: number, i: number) => {<br>
+&nbsp;&nbsp;const y = yieldVals[i] ?? 0;<br>
+&nbsp;&nbsp;const pr = priceVals[i] ?? 0;<br>
+&nbsp;&nbsp;return 0.5 * p + 0.4 * y + 0.1 * pr;<br>
+});<br>
+<br>
+merged.addColumn("Market_Score", marketScore);
+        </div>
+    </div>
+
+    <h2>5. DATA QUALITY TECHNIQUES</h2>
+
+    <h3>5.1 Missing Value Handling</h3>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Strategy</th>
+            <th>Fallback Value</th>
+        </tr>
+        <tr>
+            <td>Season</td>
+            <td>Empty string default</td>
+            <td>""</td>
+        </tr>
+        <tr>
+            <td>Area</td>
+            <td>Default to 1 for calculation</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Rainfall</td>
+            <td>Default to 0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>Fertilizer</td>
+            <td>Default to 0, adjust in cost calculation</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>Yield</td>
+            <td>Calculate from production/area</td>
+            <td>production / area</td>
+        </tr>
+        <tr>
+            <td>Price (normalized)</td>
+            <td>Null coalescing operator</td>
+            <td>0</td>
+        </tr>
+    </table>
+
+    <h3>5.2 Outlier Handling</h3>
+    <div class="algorithm-box">
+        <h4>Median-Based Robustness</h4>
+        <p>Using median instead of mean for yield calculations automatically handles outliers:</p>
+        <div class="formula">
+            Median is resistant to extreme values<br>
+            <br>
+            Example: [1, 2, 3, 4, 100]<br>
+            • Mean = 22 (skewed by outlier)<br>
+            • Median = 3 (robust)
+        </div>
+    </div>
+
+    <h3>5.3 Data Validation Rules</h3>
+    <ul>
+        <li><strong>Non-negative Constraints:</strong> Yields, costs, prices must be ≥ 0</li>
+        <li><strong>Minimum Thresholds:</strong> Fertilizer cost ≥ ₹2000, Pesticide cost ≥ ₹1000</li>
+        <li><strong>Completeness Checks:</strong> Skip rows with missing critical fields (crop name, state)</li>
+        <li><strong>Type Validation:</strong> Numeric fields must parse to valid numbers</li>
+        <li><strong>Range Checks:</strong> Normalized values must be in [0, 1]</li>
+    </ul>
+
+    <h2>6. PERFORMANCE OPTIMIZATION TECHNIQUES</h2>
+
+    <h3>6.1 Lazy Loading</h3>
+    <div class="algorithm-box">
+        <p>Data files are loaded only when needed, not at application startup:</p>
+        <div class="code-block">
+// Triggered only when user requests recommendations<br>
+const response = await fetch('/data/crop_dataset.csv');<br>
+const csvText = await response.text();<br>
+const cropData = parseCSVData(csvText);
+        </div>
+    </div>
+
+    <h3>6.2 Memoization</h3>
+    <p>Expensive calculations are cached to avoid recomputation:</p>
+    <ul>
+        <li><strong>Market prices:</strong> 30-minute cache</li>
+        <li><strong>Weather data:</strong> Per-session cache</li>
+        <li><strong>Normalized datasets:</strong> Computed once, reused</li>
+    </ul>
+
+    <h3>6.3 Efficient Filtering</h3>
+    <div class="algorithm-box">
+        <p>Use native array methods for optimal performance:</p>
+        <div class="code-block">
+// Efficient: Single-pass filter<br>
+filtered = cropData.filter(c => <br>
+&nbsp;&nbsp;c.state === profileState && <br>
+&nbsp;&nbsp;c.season === profileSeason<br>
+);<br>
+<br>
+// Avoid: Multiple passes<br>
+// filtered = cropData.filter(c => c.state === profileState);<br>
+// filtered = filtered.filter(c => c.season === profileSeason);
+        </div>
+    </div>
+
+    <div class="example">
+        <h3>🔬 Complete Processing Pipeline Example</h3>
+        <ol>
+            <li><strong>Load:</strong> Read 10,000 crop records from CSV (500ms)</li>
+            <li><strong>Parse:</strong> Convert to structured objects (200ms)</li>
+            <li><strong>Filter:</strong> Reduce to ~500 records for Maharashtra Kharif (50ms)</li>
+            <li><strong>Normalize:</strong> Apply Min-Max scaling (100ms)</li>
+            <li><strong>Merge:</strong> Join with soil data (80ms)</li>
+            <li><strong>Engineer:</strong> Calculate Soil_Score and Market_Score (40ms)</li>
+            <li><strong>Group:</strong> Aggregate by crop name to ~30 unique crops (60ms)</li>
+            <li><strong>Score:</strong> Compute composite scores (20ms)</li>
+            <li><strong>Sort & Return:</strong> Top 10 recommendations (10ms)</li>
+        </ol>
+        <p><strong>Total Processing Time: ~960ms ≈ 1 second</strong></p>
+    </div>
+
+    <hr style="margin: 30px 0;">
+    <p style="text-align: center; color: #666; font-size: 9pt;">
+        <em>Comprehensive documentation of data processing and normalization techniques.</em>
+    </p>
+</body>
+</html>

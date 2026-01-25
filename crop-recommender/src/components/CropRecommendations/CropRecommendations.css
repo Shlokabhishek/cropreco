@@ -1,0 +1,454 @@
+.crop__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+	gap: 1rem;
+}
+
+.crop__subtitle {
+	color: #64748b;
+	font-size: 0.9rem;
+	margin: 0;
+	flex: 1;
+}
+
+.crop__subtitle-badge {
+	display: inline-block;
+	background: #dcfce7;
+	color: #15803d;
+	padding: 0.15rem 0.5rem;
+	border-radius: 4px;
+	font-size: 0.85rem;
+	font-weight: 500;
+	margin-left: 0.5rem;
+}
+
+.crop__loading,
+.crop__error,
+.crop__empty {
+	text-align: center;
+	color: #64748b;
+	padding: 2rem 1rem;
+	font-size: 0.95rem;
+	margin: 0;
+}
+
+.crop__loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.crop__spinner {
+	width: 40px;
+	height: 40px;
+	border: 4px solid #e2e8f0;
+	border-top-color: #3b82f6;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	to { transform: rotate(360deg); }
+}
+
+.crop__error {
+	color: #dc2626;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.crop__empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.crop__empty-hint {
+	font-size: 0.85rem;
+	color: #94a3b8;
+}
+
+.crop__list {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.crop__card {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 1rem;
+	transition: all 0.2s;
+}
+
+.crop__card:hover {
+	border-color: #3b82f6;
+	box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.crop__header-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 0.75rem;
+	gap: 1rem;
+}
+
+.crop__name {
+	margin: 0;
+	font-size: 1.1rem;
+	color: #1e293b;
+	font-weight: 600;
+}
+
+.crop__season {
+	color: #64748b;
+	font-size: 0.85rem;
+	font-weight: 400;
+}
+
+.crop__score {
+	background: #3b82f6;
+	color: white;
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-size: 0.85rem;
+	white-space: nowrap;
+}
+
+.crop__metrics {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75rem;
+	margin-bottom: 1rem;
+}
+
+.crop__metric {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.crop__metric--profit {
+	text-align: right;
+}
+
+.crop__metric-label {
+	font-size: 0.8rem;
+	color: #64748b;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.crop__metric-value {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #1e293b;
+}
+
+.crop__profit {
+	color: #10b981;
+}
+
+.crop__loss {
+	color: #dc2626;
+}
+
+/* Intercropping Badge */
+.crop__intercropping-badge {
+	display: inline-block;
+	background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+	border: 1px solid #fbbf24;
+	color: #92400e;
+	padding: 0.35rem 0.75rem;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	font-weight: 500;
+	margin-bottom: 0.75rem;
+}
+
+/* Live Price Badge */
+.crop__price-badge {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+	border: 1px solid #a7f3d0;
+	border-radius: 6px;
+	padding: 0.5rem 0.75rem;
+	margin-bottom: 0.75rem;
+	font-size: 0.9rem;
+}
+
+.crop__live-indicator {
+	color: #10b981;
+	animation: pulse 2s infinite;
+	font-size: 0.75rem;
+}
+
+@keyframes pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
+
+.crop__live-price {
+	font-weight: 600;
+	color: #059669;
+}
+
+.crop__price-source {
+	color: #64748b;
+	font-size: 0.8rem;
+}
+
+.crop__financials {
+	border-top: 1px solid #e2e8f0;
+	padding-top: 0.75rem;
+}
+
+.crop__financial-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.5rem 0;
+	font-size: 0.95rem;
+}
+
+.crop__total-cost {
+	border-bottom: 1px solid #e2e8f0;
+	margin-bottom: 0.5rem;
+	font-weight: 500;
+}
+
+.crop__revenue {
+	color: #10b981;
+	font-weight: 600;
+}
+
+.crop__breakdown {
+	margin-top: 0.5rem;
+}
+
+.crop__breakdown-toggle {
+	cursor: pointer;
+	color: #3b82f6;
+	font-size: 0.9rem;
+	padding: 0.5rem 0;
+	user-select: none;
+	list-style: none;
+}
+
+.crop__breakdown-toggle::-webkit-details-marker {
+	display: none;
+}
+
+.crop__breakdown-toggle::before {
+	content: "▶ ";
+	display: inline-block;
+	transition: transform 0.2s;
+}
+
+details[open] .crop__breakdown-toggle::before {
+	transform: rotate(90deg);
+}
+
+.crop__breakdown-content {
+	background: white;
+	border-radius: 6px;
+	padding: 0.75rem;
+	margin-top: 0.5rem;
+}
+
+.crop__breakdown-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.4rem 0;
+	font-size: 0.9rem;
+	color: #475569;
+}
+
+.crop__breakdown-item:not(:last-child) {
+	border-bottom: 1px dashed #e2e8f0;
+}
+
+/* Tabs */
+.crop__tabs {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+	border-bottom: 2px solid #e2e8f0;
+	padding-bottom: 0;
+}
+
+.crop__tab {
+	padding: 0.75rem 1.25rem;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: 0.95rem;
+	font-weight: 500;
+	color: #64748b;
+	border-bottom: 3px solid transparent;
+	margin-bottom: -2px;
+	transition: all 0.2s ease;
+}
+
+.crop__tab:hover {
+	color: #3b82f6;
+}
+
+.crop__tab--active {
+	color: #3b82f6;
+	border-bottom-color: #3b82f6;
+}
+
+/* Farming Type Cards */
+.farming__list {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.farming__card {
+	background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	padding: 1.25rem;
+}
+
+.farming__header-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.75rem;
+}
+
+.farming__name {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #1e293b;
+	margin: 0;
+}
+
+.farming__score {
+	padding: 0.35rem 0.75rem;
+	border-radius: 20px;
+	font-size: 0.85rem;
+	font-weight: 600;
+}
+
+.farming__score--high {
+	background: #dcfce7;
+	color: #16a34a;
+}
+
+.farming__score--medium {
+	background: #fef3c7;
+	color: #d97706;
+}
+
+.farming__score--low {
+	background: #fee2e2;
+	color: #dc2626;
+}
+
+.farming__description {
+	color: #64748b;
+	font-size: 0.9rem;
+	margin: 0 0 1rem;
+	line-height: 1.5;
+}
+
+.farming__details {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.farming__section {
+	background: white;
+	border-radius: 8px;
+	padding: 0.75rem 1rem;
+}
+
+.farming__section-title {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #334155;
+	margin: 0 0 0.5rem;
+}
+
+.farming__benefits,
+.farming__challenges {
+	margin: 0;
+	padding-left: 1.25rem;
+	font-size: 0.85rem;
+	color: #475569;
+}
+
+.farming__benefits li,
+.farming__challenges li {
+	margin-bottom: 0.25rem;
+}
+
+.farming__benefits li {
+	color: #16a34a;
+}
+
+.farming__challenges li {
+	color: #d97706;
+}
+
+.farming__crops-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.farming__crop-tag {
+	background: #dbeafe;
+	color: #1d4ed8;
+	padding: 0.25rem 0.6rem;
+	border-radius: 12px;
+	font-size: 0.8rem;
+	font-weight: 500;
+}
+
+@media (max-width: 768px) {
+	.crop__header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	
+	.crop__metrics {
+		grid-template-columns: 1fr;
+	}
+	
+	.crop__metric--profit {
+		text-align: left;
+	}
+	
+	.crop__tabs {
+		flex-direction: column;
+	}
+	
+	.crop__tab {
+		border-bottom: none;
+		border-left: 3px solid transparent;
+		margin-bottom: 0;
+		margin-left: -2px;
+	}
+	
+	.crop__tab--active {
+		border-left-color: #3b82f6;
+	}
+}
