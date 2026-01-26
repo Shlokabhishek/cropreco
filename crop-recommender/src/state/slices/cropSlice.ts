@@ -14,6 +14,7 @@ export type CropRecommendation = {
 	season?: string;
 	livePrice?: number;
 	priceSource?: string;
+	farmingType?: string;
 };
 
 export type CropState = {

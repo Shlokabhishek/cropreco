@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../state/store";
 import { setCropStatus, setRecommendations } from "../state/slices/cropSlice";
-import { parseCSVData, recommendCrops, fetchLiveMarketPrices, recommendFarmingType, identifyCropsToAvoid, FarmingType, CropToAvoid } from "../services/recommender";
+import { parseCSVData, recommendCrops, fetchLiveMarketPrices, recommendFarmingType, identifyCropsToAvoid, CropToAvoid } from "../services/recommender";
 
 export const useCropRecommendation = () => {
 	const dispatch = useDispatch<AppDispatch>();

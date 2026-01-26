@@ -17,7 +17,7 @@ export type ForecastDay = {
 const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || "";
 
 // Mock weather data generator
-export function generateMockWeather(location: string): WeatherData {
+export function generateMockWeather(_location: string): WeatherData {
   return {
     temperature: 20 + Math.random() * 15,
     humidity: 40 + Math.random() * 40,
@@ -50,7 +50,7 @@ export async function fetchLiveWeather(location: string): Promise<ForecastDay[] 
       if (response.ok) {
         const data = await response.json();
         // Process API response to match our format
-        const forecast = data.list.slice(0, 7).map((item: any, idx: number) => ({
+        const forecast = data.list.slice(0, 7).map((item: any) => ({
           day: new Date(item.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
           temperatureC: Math.round(item.main.temp),
           condition: item.weather[0].main
