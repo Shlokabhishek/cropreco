@@ -313,7 +313,7 @@
             <h1>🌾 Crop Recommender System</h1>
             <p class="subtitle">Complete System Documentation</p>
             <p class="subtitle">Architecture, Algorithms, Code & Flowcharts</p>
-            <p class="version">Version 1.0 | January 2026</p>
+            <p class="version">Version 1.2 | February 2026</p>
             <p class="version">Full-Stack React + Node.js Application</p>
         </div>
 
@@ -327,7 +327,19 @@
                 <li><span class="section-num">4.</span> <a href="#database">Database Schema</a></li>
                 <li><span class="section-num">5.</span> <a href="#flowcharts">Data Flow Diagrams</a></li>
                 <li><span class="section-num">6.</span> <a href="#api">API Architecture</a></li>
-                <li><span class="section-num">7.</span> <a href="#algorithms">Recommendation Algorithms</a></li>
+                <li><span class="section-num">7.</span> <a href="#algorithms">Recommendation Algorithms (WMFS)</a>
+                    <ul style="margin-left: 20px; margin-top: 5px; font-size: 0.9em;">
+                        <li>7.1 Algorithm Overview: How WMFS Recommends Crops</li>
+                        <li>7.2 Mathematical Formulae (8 Core Equations)</li>
+                        <li>7.3 Detailed Scoring Formula</li>
+                        <li>7.4 Economic Calculations</li>
+                        <li>7.5 Filtering Strategy</li>
+                        <li>7.6 Farming Type Scoring Algorithms</li>
+                        <li>7.7 Intercropping & Multiple Crops Algorithm</li>
+                        <li>7.8 Crops to Avoid Algorithm (Risk Assessment)</li>
+                        <li>7.9 Live Market Price Integration</li>
+                    </ul>
+                </li>
                 <li><span class="section-num">8.</span> <a href="#code-snippets">Key Code Snippets</a></li>
                 <li><span class="section-num">9.</span> <a href="#security">Security Architecture</a></li>
                 <li><span class="section-num">10.</span> <a href="#deployment">Deployment Guide</a></li>
@@ -1171,121 +1183,543 @@ market_prices (independent table)
 
         <!-- Section 7: Recommendation Algorithms -->
         <h2 id="algorithms" class="page-break">7. Recommendation Algorithms</h2>
-        
-        <h3>7.1 Scoring Algorithm</h3>
 
-        <p>The crop recommendation engine uses a multi-factor scoring system to rank crops based on their suitability for the farmer's conditions.</p>
-
-        <div class="info-box">
-            <strong>Scoring Formula:</strong><br>
-            <code>Final Score = Base Score (50) + Rainfall Match (0-25) + Soil Match (0-15) + Additional Factors</code>
+        <div class="success-box">
+            <h3 style="margin-top: 0; color: #1b5e20;">🧮 Algorithm Name: Weighted Multi-Factor Scoring Algorithm (WMFS)</h3>
+            <p>The Crop Recommender System uses a <strong>Weighted Multi-Factor Scoring Algorithm (WMFS)</strong> - a hybrid decision-support algorithm that combines:</p>
+            <ul>
+                <li><strong>Multi-Criteria Decision Analysis (MCDA)</strong> - Evaluates crops against multiple weighted criteria</li>
+                <li><strong>Cost-Benefit Analysis (CBA)</strong> - Calculates ROI, profit margins, and economic viability</li>
+                <li><strong>Contextual Filtering</strong> - Geographic, seasonal, and soil-based elimination</li>
+                <li><strong>Real-time Market Integration</strong> - Live price data from AGMARKNET API</li>
+            </ul>
         </div>
 
-        <h4>Algorithm Components:</h4>
+        <h3>7.1 Algorithm Overview: How WMFS Recommends Crops</h3>
 
-        <ol>
-            <li><strong>Base Score (50 points):</strong> Starting point for all crops</li>
-            <li><strong>Rainfall Match (up to 25 points):</strong>
-                <ul>
-                    <li>Compare farmer's rainfall with crop's optimal rainfall</li>
-                    <li>Score = 25 - (|difference| / 10)</li>
-                    <li>Closer match = Higher score</li>
-                </ul>
-            </li>
-            <li><strong>Soil Type Match (15 points):</strong>
-                <ul>
-                    <li>Full match: +15 points</li>
-                    <li>Partial match: +7 points</li>
-                    <li>No match: 0 points</li>
-                </ul>
-            </li>
-            <li><strong>Economic Calculations:</strong>
-                <ul>
-                    <li>Yield = Yield/Hectare × (Acreage × 0.404686)</li>
-                    <li>Revenue = Yield × Market Price</li>
-                    <li>Profit = Revenue - (Fertilizer + Pesticide + Labor + Seed costs)</li>
-                </ul>
-            </li>
-        </ol>
-
-        <h3>7.2 Filtering Strategy</h3>
+        <p>The <strong>Weighted Multi-Factor Scoring Algorithm (WMFS)</strong> recommends crops through a systematic 5-phase process:</p>
 
         <div class="flowchart">
-┌─────────────────────────────────────────────────────────────────┐
-│                    MULTI-LEVEL FILTERING                        │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│           WMFS ALGORITHM: CROP RECOMMENDATION PROCESS                   │
+└─────────────────────────────────────────────────────────────────────────┘
 
-        Input: All crops from dataset
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ LEVEL 1: GEOGRAPHIC FILTER                                      │
-│ ───────────────────────────                                     │
-│ Filter crops by state match                                     │
-│ Example: state === "Maharashtra"                                │
-│                                                                 │
-│ Purpose: Eliminate crops not grown in region                    │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ LEVEL 2: SEASONAL FILTER                                        │
-│ ────────────────────────                                        │
-│ Filter crops by season                                          │
-│ • Kharif (June-October)                                         │
-│ • Rabi (October-March)                                          │
-│ • Zaid (March-June)                                             │
-│ • Whole Year                                                    │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ LEVEL 3: SOIL TYPE FILTER                                       │
-│ ─────────────────────────                                       │
-│ Match soil type with crop requirements                          │
-│ Types: Loamy, Clay, Sandy, Black, Red, Alluvial                │
-│                                                                 │
-│ Scoring: Exact match = 15pts, Partial = 7pts                   │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             ▼
-        Output: Filtered & Scored Crops
+   PHASE 1: DATA COLLECTION & PREPROCESSING
+   ─────────────────────────────────────────
+   ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+   │  Farmer Profile │    │  Crop Dataset   │    │  Live Prices    │
+   │  • State        │    │  • 50,000+ rows │    │  • AGMARKNET    │
+   │  • Acreage      │    │  • 30+ crops    │    │  • MSP Fallback │
+   │  • Soil Type    │    │  • All states   │    │  • 30min cache  │
+   │  • Budget       │    │  • Yields/costs │    │                 │
+   │  • Season       │    │                 │    │                 │
+   └────────┬────────┘    └────────┬────────┘    └────────┬────────┘
+            │                      │                      │
+            └──────────────────────┼──────────────────────┘
+                                   │
+                                   ▼
+   PHASE 2: CONTEXTUAL FILTERING (Elimination)
+   ────────────────────────────────────────────
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  Filter 1: Geographic Match (State)                            │
+   │  ┌───────────────────────────────────────────────────────────┐  │
+   │  │  normalizeState(crop.state) === normalizeState(profile)   │  │
+   │  └───────────────────────────────────────────────────────────┘  │
+   │                           │                                     │
+   │                           ▼                                     │
+   │  Filter 2: Seasonal Match (Kharif/Rabi/Zaid/Whole Year)        │
+   │  ┌───────────────────────────────────────────────────────────┐  │
+   │  │  season.includes(profile.season) || season="Whole Year"   │  │
+   │  └───────────────────────────────────────────────────────────┘  │
+   │                           │                                     │
+   │                           ▼                                     │
+   │  Fallback Strategy: If no matches, progressively relax filters │
+   │  • Level 1: State only (ignore season)                         │
+   │  • Level 2: Partial state match                                │
+   │  • Level 3: Season only (any state)                            │
+   │  • Level 4: Nationwide data                                    │
+   └─────────────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+   PHASE 3: ECONOMIC CALCULATION (Per Crop)
+   ──────────────────────────────────────────
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  For each filtered crop:                                        │
+   │                                                                  │
+   │  COSTS (per hectare):                                           │
+   │  ├── Fertilizer Cost = max(avgFertilizer × 0.05, ₹2000)        │
+   │  ├── Pesticide Cost  = max(avgPesticide × 0.1, ₹1000)          │
+   │  ├── Labor Cost      = ₹15,000 (fixed)                         │
+   │  └── Seed Cost       = ₹5,000 (fixed)                          │
+   │                                                                  │
+   │  Total Cost = (Fertilizer + Pesticide + Labor + Seed) × Acreage│
+   │                                                                  │
+   │  REVENUE:                                                        │
+   │  ├── Yield (quintals) = avgYield × 10 (convert tonnes)         │
+   │  ├── Market Price     = Live Price || MSP 2024-25              │
+   │  └── Revenue = Yield × MarketPrice × Acreage                   │
+   │                                                                  │
+   │  PROFIT = Revenue - Total Cost                                  │
+   └─────────────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+   PHASE 4: WEIGHTED SCORING (WMFS Core)
+   ───────────────────────────────────────
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  SCORING FORMULA:                                                │
+   │  ┌───────────────────────────────────────────────────────────┐  │
+   │  │                                                           │  │
+   │  │  Final Score = (Budget Score × 0.30)    ← 30% weight      │  │
+   │  │              + (Profit Score × 0.30)    ← 30% weight      │  │
+   │  │              + (Yield Score  × 0.20)    ← 20% weight      │  │
+   │  │              + (ROI Score    × 0.20)    ← 20% weight      │  │
+   │  │                                                           │  │
+   │  └───────────────────────────────────────────────────────────┘  │
+   │                                                                  │
+   │  COMPONENT CALCULATIONS:                                         │
+   │  ┌───────────────────────────────────────────────────────────┐  │
+   │  │ Budget Score = cost ≤ budget ? 1 : max(0, budget/cost)    │  │
+   │  │ Profit Score = profit > 0 ? min(profit/200000, 1) : 0     │  │
+   │  │ Yield Score  = min(avgYield / 10, 1)                      │  │
+   │  │ ROI Score    = cost > 0 ? min(profit/cost, 1) : 0         │  │
+   │  └───────────────────────────────────────────────────────────┘  │
+   └─────────────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+   PHASE 5: RANKING & SELECTION
+   ─────────────────────────────
+   ┌─────────────────────────────────────────────────────────────────┐
+   │  1. Sort all crops by Final Score (descending)                  │
+   │  2. Apply budget flexibility:                                   │
+   │     • Primary: crops within 1.5× budget                         │
+   │     • Secondary: crops within 3× budget                         │
+   │     • Fallback: top profitable crops (any budget)               │
+   │  3. If multiple crops requested:                                │
+   │     • Apply companion crop logic for intercropping              │
+   │     • Boost compatible crops (+10% score bonus)                 │
+   │  4. Return top 8 recommendations                                │
+   └─────────────────────────────────────────────────────────────────┘
         </div>
 
-        <h3>7.3 Farming Type Algorithms</h3>
+        <h3>7.2 Mathematical Formulae</h3>
+
+        <p>The WMFS algorithm uses the following mathematical formulae for crop recommendation:</p>
+
+        <div class="success-box" style="background: #f3e5f5; border-left-color: #7b1fa2;">
+            <h4 style="color: #7b1fa2; margin-top: 0;">📐 WMFS Core Formulae</h4>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">1. Final Score Calculation (Weighted Sum)</h5>
+                <p style="font-size: 1.2em; text-align: center; padding: 15px; background: #f5f5f5; border-radius: 4px;">
+                    <strong>S<sub>final</sub> = (S<sub>budget</sub> × 0.30) + (S<sub>profit</sub> × 0.30) + (S<sub>yield</sub> × 0.20) + (S<sub>ROI</sub> × 0.20)</strong>
+                </p>
+                <p style="font-size: 0.9em; color: #666;">Where S<sub>final</sub> ∈ [0, 1] represents the normalized recommendation score</p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">2. Individual Score Components</h5>
+                
+                <table style="width: 100%; margin: 10px 0; border-collapse: collapse;">
+                    <tr style="background: #e3f2fd;">
+                        <td style="padding: 12px; border: 1px solid #ddd; width: 25%;"><strong>Budget Score (S<sub>budget</sub>)</strong></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-family: monospace;">
+                            S<sub>budget</sub> = 
+                            <span style="display: inline-block; border-left: 2px solid #333; padding-left: 10px;">
+                                1.0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if C<sub>total</sub> ≤ B<br>
+                                max(0, B / C<sub>total</sub>) &nbsp;&nbsp; if C<sub>total</sub> > B
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Profit Score (S<sub>profit</sub>)</strong></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-family: monospace;">
+                            S<sub>profit</sub> = 
+                            <span style="display: inline-block; border-left: 2px solid #333; padding-left: 10px;">
+                                min(P / 200000, 1) &nbsp; if P > 0<br>
+                                0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if P ≤ 0
+                            </span>
+                        </td>
+                    </tr>
+                    <tr style="background: #e3f2fd;">
+                        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Yield Score (S<sub>yield</sub>)</strong></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-family: monospace;">
+                            S<sub>yield</sub> = min(Y<sub>avg</sub> / 10, 1)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd;"><strong>ROI Score (S<sub>ROI</sub>)</strong></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-family: monospace;">
+                            S<sub>ROI</sub> = 
+                            <span style="display: inline-block; border-left: 2px solid #333; padding-left: 10px;">
+                                min(P / C<sub>total</sub>, 1) &nbsp; if C<sub>total</sub> > 0<br>
+                                0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if C<sub>total</sub> = 0
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p style="font-size: 0.85em; color: #666; margin-top: 15px;">
+                    <strong>Legend:</strong> B = Budget, P = Profit, Y<sub>avg</sub> = Average Yield (tonnes/hectare), C<sub>total</sub> = Total Cost
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">3. Cost Calculation Formulae</h5>
+                
+                <div style="background: #fff8e1; padding: 15px; border-radius: 4px; margin: 10px 0;">
+                    <p style="margin: 8px 0;"><strong>C<sub>fertilizer</sub></strong> = max(F<sub>avg</sub> × 0.05, 2000) &nbsp;&nbsp;<em style="color: #666;">[₹ per hectare]</em></p>
+                    <p style="margin: 8px 0;"><strong>C<sub>pesticide</sub></strong> = max(P<sub>avg</sub> × 0.10, 1000) &nbsp;&nbsp;<em style="color: #666;">[₹ per hectare]</em></p>
+                    <p style="margin: 8px 0;"><strong>C<sub>labor</sub></strong> = 15,000 &nbsp;&nbsp;<em style="color: #666;">[₹ per hectare, fixed]</em></p>
+                    <p style="margin: 8px 0;"><strong>C<sub>seed</sub></strong> = 5,000 &nbsp;&nbsp;<em style="color: #666;">[₹ per hectare, fixed]</em></p>
+                </div>
+                
+                <p style="font-size: 1.1em; text-align: center; padding: 10px; background: #e8f5e9; border-radius: 4px; margin: 15px 0;">
+                    <strong>C<sub>hectare</sub> = C<sub>fertilizer</sub> + C<sub>pesticide</sub> + C<sub>labor</sub> + C<sub>seed</sub></strong>
+                </p>
+                
+                <p style="font-size: 1.1em; text-align: center; padding: 10px; background: #ffebee; border-radius: 4px;">
+                    <strong>C<sub>total</sub> = C<sub>hectare</sub> × A</strong>
+                    &nbsp;&nbsp;<em style="color: #666; font-size: 0.9em;">where A = Acreage (hectares)</em>
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">4. Revenue & Profit Formulae</h5>
+                
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 4px; margin: 10px 0;">
+                    <p style="margin: 8px 0;"><strong>Y<sub>quintals</sub></strong> = Y<sub>avg</sub> × 10 &nbsp;&nbsp;<em style="color: #666;">[Convert tonnes to quintals]</em></p>
+                    <p style="margin: 8px 0;"><strong>R<sub>hectare</sub></strong> = Y<sub>quintals</sub> × M<sub>price</sub> &nbsp;&nbsp;<em style="color: #666;">[₹ per hectare]</em></p>
+                    <p style="margin: 8px 0;"><strong>R<sub>total</sub></strong> = R<sub>hectare</sub> × A &nbsp;&nbsp;<em style="color: #666;">[Total Revenue]</em></p>
+                </div>
+                
+                <p style="font-size: 1.2em; text-align: center; padding: 15px; background: #c8e6c9; border-radius: 4px; margin: 15px 0;">
+                    <strong style="color: #1b5e20;">P = R<sub>total</sub> - C<sub>total</sub></strong>
+                    &nbsp;&nbsp;<em style="color: #2e7d32; font-size: 0.9em;">[Profit Formula]</em>
+                </p>
+                
+                <p style="font-size: 0.85em; color: #666;">
+                    <strong>Legend:</strong> M<sub>price</sub> = Market Price (₹/quintal), R = Revenue, P = Profit, A = Acreage
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">5. Median Yield Calculation</h5>
+                
+                <p style="background: #f5f5f5; padding: 15px; border-radius: 4px;">
+                    Given sorted yield array: Y = [y<sub>1</sub>, y<sub>2</sub>, ..., y<sub>n</sub>]<br><br>
+                    <strong>Y<sub>avg</sub> = Y[⌊n/2⌋]</strong> &nbsp;&nbsp;<em style="color: #666;">[Median for stability against outliers]</em>
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">6. Farming Type Suitability Scores</h5>
+                
+                <table style="width: 100%; margin: 10px 0; border-collapse: collapse; font-size: 0.95em;">
+                    <tr style="background: #e8f5e9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Organic</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-family: monospace;">
+                            S = 0.50 + 0.15×I<sub>soil</sub> + 0.10×I<sub>small</sub> + 0.10×I<sub>budget</sub>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Intensive</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-family: monospace;">
+                            S = 0.40 + 0.20×I<sub>highBudget</sub> + 0.15×I<sub>large</sub> + 0.10×I<sub>fertile</sub>
+                        </td>
+                    </tr>
+                    <tr style="background: #e8f5e9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Mixed</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-family: monospace;">
+                            S = 0.55 + 0.15×I<sub>medium</sub> + 0.10×I<sub>budget</sub>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Precision</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-family: monospace;">
+                            S = 0.30 + 0.25×I<sub>veryHighBudget</sub> + 0.20×I<sub>large</sub>
+                        </td>
+                    </tr>
+                    <tr style="background: #e8f5e9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Sustainable</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd; font-family: monospace;">
+                            S = 0.60 + 0.10×I<sub>soil</sub> + 0.10×I<sub>moderate</sub> + 0.10×I<sub>budget</sub>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                    <strong>Note:</strong> I<sub>x</sub> ∈ {0, 1} are indicator functions. Final score: S<sub>final</sub> = min(S, 1)
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #1565c0; border-bottom: 1px solid #ddd; padding-bottom: 5px;">7. Companion Crop Score Boost</h5>
+                
+                <p style="background: #e3f2fd; padding: 15px; border-radius: 4px; text-align: center;">
+                    <strong>S<sub>boosted</sub> = min(S<sub>original</sub> × 1.10, 1.0)</strong>
+                    &nbsp;&nbsp;<em style="color: #666;">[10% bonus for compatible intercropping]</em>
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: 'Times New Roman', serif;">
+                <h5 style="color: #d32f2f; border-bottom: 1px solid #ddd; padding-bottom: 5px;">8. Risk Assessment (Crops to Avoid)</h5>
+                
+                <p style="background: #ffebee; padding: 15px; border-radius: 4px;">
+                    <strong>L<sub>estimated</sub> = Σ (L<sub>factor</sub> × A)</strong><br><br>
+                    Where L<sub>factor</sub> values:<br>
+                    • Unsuitable Soil: ₹15,000 × A<br>
+                    • Unsuitable Season: ₹20,000 × A<br>
+                    • Low Market Price: ₹10,000 × A<br>
+                    • Weather Risk: ₹8,000 × A<br>
+                    • Low Yield: ₹12,000 × A<br>
+                    • Negative Profit: max(L<sub>estimated</sub>, C<sub>total</sub> - R<sub>total</sub>)
+                </p>
+                
+                <p style="margin-top: 15px;">
+                    <strong>Risk Level:</strong><br>
+                    • <span style="color: #d32f2f;">HIGH</span> = (count(risk_factors) ≥ 3) ∨ (P < 0)<br>
+                    • <span style="color: #f57c00;">MEDIUM</span> = count(risk_factors) = 2
+                </p>
+            </div>
+        </div>
+
+        <h3>7.3 Detailed Scoring Formula</h3>
+
+        <p>The WMFS algorithm uses a weighted scoring system where each factor contributes to the final recommendation score:</p>
+
+        <div class="info-box">
+            <strong>WMFS Scoring Formula:</strong><br><br>
+            <code style="font-size: 1.1em; background: #fff; padding: 10px; display: block; border-radius: 4px;">
+                Final Score = (Budget Score × 0.30) + (Profit Score × 0.30) + (Yield Score × 0.20) + (ROI Score × 0.20)
+            </code>
+        </div>
 
         <table>
             <tr>
-                <th>Farming Type</th>
-                <th>Key Factors</th>
-                <th>Recommended Crops</th>
+                <th>Score Component</th>
+                <th>Weight</th>
+                <th>Calculation</th>
+                <th>Purpose</th>
             </tr>
             <tr>
-                <td>Organic Farming</td>
-                <td>Low pesticide, natural fertilizers</td>
-                <td>Vegetables, Pulses, Oilseeds</td>
+                <td><strong>Budget Score</strong></td>
+                <td>30%</td>
+                <td><code>cost ≤ budget ? 1.0 : max(0, budget/cost)</code></td>
+                <td>Ensures recommendations are affordable for the farmer</td>
             </tr>
             <tr>
-                <td>Intensive Farming</td>
-                <td>High yield, maximum output</td>
-                <td>Rice, Wheat, Sugarcane</td>
+                <td><strong>Profit Score</strong></td>
+                <td>30%</td>
+                <td><code>profit > 0 ? min(profit/200000, 1) : 0</code></td>
+                <td>Prioritizes crops with higher absolute profit potential</td>
             </tr>
             <tr>
-                <td>Mixed Farming</td>
-                <td>Crop rotation, companion planting</td>
-                <td>Multiple complementary crops</td>
+                <td><strong>Yield Score</strong></td>
+                <td>20%</td>
+                <td><code>min(avgYield / 10, 1)</code></td>
+                <td>Favors high-yielding crops (normalized to 10 tonnes/hectare)</td>
             </tr>
             <tr>
-                <td>Precision Farming</td>
-                <td>Technology-driven, data-based</td>
-                <td>High-value commercial crops</td>
-            </tr>
-            <tr>
-                <td>Sustainable Farming</td>
-                <td>Environment-friendly, long-term</td>
-                <td>Native varieties, perennials</td>
+                <td><strong>ROI Score</strong></td>
+                <td>20%</td>
+                <td><code>cost > 0 ? min(profit/cost, 1) : 0</code></td>
+                <td>Return on Investment - efficiency of capital use</td>
             </tr>
         </table>
+
+        <h3>7.4 Economic Calculations</h3>
+
+        <div class="info-box">
+            <strong>Cost & Revenue Formulas:</strong>
+            <ul style="margin-top: 10px;">
+                <li><strong>Fertilizer Cost</strong> = max(avgFertilizer × 0.05, ₹2000) per hectare</li>
+                <li><strong>Pesticide Cost</strong> = max(avgPesticide × 0.1, ₹1000) per hectare</li>
+                <li><strong>Labor Cost</strong> = ₹15,000 per hectare (fixed)</li>
+                <li><strong>Seed Cost</strong> = ₹5,000 per hectare (fixed)</li>
+                <li><strong>Total Cost</strong> = (Fertilizer + Pesticide + Labor + Seed) × Acreage</li>
+                <li><strong>Yield</strong> = Average Yield (tonnes/hectare) × 10 = Quintals</li>
+                <li><strong>Revenue</strong> = Yield (quintals) × Market Price × Acreage</li>
+                <li><strong>Profit</strong> = Revenue - Total Cost</li>
+            </ul>
+        </div>
+
+        <h3>7.5 Farming Type Scoring Algorithms</h3>
+
+        <p>The system uses separate scoring algorithms to recommend the most suitable farming type based on the farmer's profile:</p>
+
+        <div class="info-box">
+            <strong>Farming Type Scoring Formulas:</strong>
+            <table style="margin-top: 15px; background: white;">
+                <tr>
+                    <th>Farming Type</th>
+                    <th>Scoring Algorithm</th>
+                    <th>Suitability Factors</th>
+                </tr>
+                <tr>
+                    <td><strong>Organic Farming</strong></td>
+                    <td>
+                        <code>Base: 0.50</code><br>
+                        <code>+0.15 if Loamy/Clay soil</code><br>
+                        <code>+0.10 if acreage ≤ 10</code><br>
+                        <code>+0.10 if budget ≥ ₹30,000</code>
+                    </td>
+                    <td>Small farms, good soil, premium markets</td>
+                </tr>
+                <tr>
+                    <td><strong>Intensive Farming</strong></td>
+                    <td>
+                        <code>Base: 0.40</code><br>
+                        <code>+0.20 if budget ≥ ₹1,00,000</code><br>
+                        <code>+0.15 if acreage ≥ 5</code><br>
+                        <code>+0.10 if Loamy/Alluvial soil</code>
+                    </td>
+                    <td>High budget, larger farms, fertile soil</td>
+                </tr>
+                <tr>
+                    <td><strong>Mixed Farming</strong></td>
+                    <td>
+                        <code>Base: 0.55</code><br>
+                        <code>+0.15 if 3 ≤ acreage ≤ 15</code><br>
+                        <code>+0.10 if budget ≥ ₹50,000</code>
+                    </td>
+                    <td>Medium-sized farms, diversification</td>
+                </tr>
+                <tr>
+                    <td><strong>Precision Farming</strong></td>
+                    <td>
+                        <code>Base: 0.30</code><br>
+                        <code>+0.25 if budget ≥ ₹2,00,000</code><br>
+                        <code>+0.20 if acreage ≥ 10</code>
+                    </td>
+                    <td>High investment capacity, large farms</td>
+                </tr>
+                <tr>
+                    <td><strong>Sustainable Farming</strong></td>
+                    <td>
+                        <code>Base: 0.60</code><br>
+                        <code>+0.10 if Loamy/Sandy Loam soil</code><br>
+                        <code>+0.10 if acreage ≤ 20</code><br>
+                        <code>+0.10 if budget ≥ ₹40,000</code>
+                    </td>
+                    <td>Long-term planning, moderate resources</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>7.6 Intercropping & Multiple Crops Algorithm</h3>
+
+        <p>When a farmer requests multiple crop recommendations, the algorithm uses a <strong>Companion Crop Selection Algorithm</strong>:</p>
+
+        <div class="flowchart">
+┌─────────────────────────────────────────────────────────────────┐
+│           COMPANION CROP SELECTION ALGORITHM                    │
+└─────────────────────────────────────────────────────────────────┘
+
+   Step 1: Select Top Crop
+   ────────────────────────
+   ┌───────────────────────────────────────────────────────────┐
+   │  Add highest-scoring crop to selection                    │
+   │  Example: Rice (score: 0.85)                              │
+   └───────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+   Step 2: Find Companion Crops
+   ────────────────────────────
+   ┌───────────────────────────────────────────────────────────┐
+   │  Check compatibility matrix:                              │
+   │  • Rice → Pulses, Gram, Moong, Urad                       │
+   │  • Wheat → Gram, Mustard, Linseed                         │
+   │  • Maize → Beans, Groundnut, Soyabean, Cowpea            │
+   │  • Cotton → Groundnut, Moong, Gram                        │
+   │  • Sugarcane → Potato, Onion, Garlic, Turmeric           │
+   └───────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+   Step 3: Score Boosting
+   ───────────────────────
+   ┌───────────────────────────────────────────────────────────┐
+   │  Companion crops receive +10% score bonus                 │
+   │  crop.score = min(crop.score × 1.1, 1.0)                  │
+   │  Mark as "Intercropping Compatible"                       │
+   └───────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+   Step 4: Diversification
+   ────────────────────────
+   ┌───────────────────────────────────────────────────────────┐
+   │  Select up to 6-8 diverse crops for risk distribution    │
+   │  Ensure mix of cereals, pulses, oilseeds where possible  │
+   └───────────────────────────────────────────────────────────┘
+        </div>
+
+        <h3>7.7 Crops to Avoid Algorithm (Risk Assessment)</h3>
+
+        <p>The system identifies crops that farmers should avoid using a multi-factor <strong>Risk Assessment Algorithm</strong>:</p>
+
+        <div class="warning-box">
+            <strong>Risk Factors Evaluated:</strong>
+            <table style="margin-top: 15px; background: white;">
+                <tr>
+                    <th>Risk Factor</th>
+                    <th>Condition</th>
+                    <th>Estimated Loss Added</th>
+                </tr>
+                <tr>
+                    <td><strong>Unsuitable Soil</strong></td>
+                    <td>Crop incompatible with farmer's soil type</td>
+                    <td>₹15,000 × acreage</td>
+                </tr>
+                <tr>
+                    <td><strong>Unsuitable Season</strong></td>
+                    <td>Crop grown in wrong season</td>
+                    <td>₹20,000 × acreage</td>
+                </tr>
+                <tr>
+                    <td><strong>Low Market Price</strong></td>
+                    <td>Volatile crops (Potato, Onion, Tomato)</td>
+                    <td>₹10,000 × acreage</td>
+                </tr>
+                <tr>
+                    <td><strong>High Input Cost</strong></td>
+                    <td>Cost exceeds 80% of budget</td>
+                    <td>Cost - Budget</td>
+                </tr>
+                <tr>
+                    <td><strong>Weather Risk</strong></td>
+                    <td>Climate-sensitive crops</td>
+                    <td>₹8,000 × acreage</td>
+                </tr>
+                <tr>
+                    <td><strong>Low Yield</strong></td>
+                    <td>Yield < 1.5 tonnes/hectare</td>
+                    <td>₹12,000 × acreage</td>
+                </tr>
+                <tr>
+                    <td><strong>Negative Profit Margin</strong></td>
+                    <td>Revenue < Cost</td>
+                    <td>Cost - Revenue</td>
+                </tr>
+            </table>
+            <p style="margin-top: 15px;"><strong>Risk Level Assignment:</strong></p>
+            <ul>
+                <li><span style="color: #d32f2f;"><strong>HIGH RISK:</strong></span> 3+ risk factors OR negative profit margin</li>
+                <li><span style="color: #f57c00;"><strong>MEDIUM RISK:</strong></span> 2 risk factors</li>
+            </ul>
+        </div>
+
+        <h3>7.8 Live Market Price Integration</h3>
+
+        <p>The algorithm integrates real-time market prices from government APIs:</p>
+
+        <div class="info-box">
+            <strong>Price Data Sources (Priority Order):</strong>
+            <ol>
+                <li><strong>AGMARKNET API</strong> - data.gov.in Agricultural Market Information System (Primary)</li>
+                <li><strong>MSP 2024-25</strong> - Minimum Support Prices as fallback (Secondary)</li>
+            </ol>
+            <p style="margin-top: 10px;"><strong>Caching Strategy:</strong> Prices cached for 30 minutes to reduce API calls</p>
+            <p><strong>Price Variation:</strong> Fallback prices include ±10% random variation for realism</p>
+        </div>
 
         <!-- Section 8: Key Code Snippets -->
         <h2 id="code-snippets" class="page-break">8. Key Code Snippets</h2>
@@ -1923,7 +2357,23 @@ npm run dev:all
             </ul>
         </div>
 
-        <h3>12.4 Future Enhancements</h3>
+        <h3>12.4 Algorithm Documentation Update (v1.2)</h3>
+
+        <div class="success-box">
+            <h4>✅ Documentation Updates - February 2026</h4>
+            <ul>
+                <li><strong>Algorithm Name Documented</strong> - Weighted Multi-Factor Scoring Algorithm (WMFS)</li>
+                <li><strong>Complete WMFS Process Flow</strong> - 5-phase recommendation process with detailed flowcharts</li>
+                <li><strong>Scoring Formula Details</strong> - Budget (30%), Profit (30%), Yield (20%), ROI (20%) weights</li>
+                <li><strong>Farming Type Scoring</strong> - Individual scoring algorithms for 5 farming types</li>
+                <li><strong>Companion Crop Algorithm</strong> - Intercropping compatibility and score boosting logic</li>
+                <li><strong>Risk Assessment Algorithm</strong> - 7 risk factors with estimated loss calculations</li>
+                <li><strong>Live Price Integration</strong> - AGMARKNET API with 30-minute caching strategy</li>
+                <li><strong>Economic Calculation Formulas</strong> - Detailed cost/revenue/profit formulas</li>
+            </ul>
+        </div>
+
+        <h3>12.5 Future Enhancements</h3>
 
         <div class="info-box">
             <h4>Planned Features</h4>
@@ -1945,9 +2395,9 @@ npm run dev:all
         <!-- Footer -->
         <div style="margin-top: 60px; padding-top: 20px; border-top: 2px solid #ddd; text-align: center; color: #666;">
             <p><strong>Crop Recommender System - Complete Documentation</strong></p>
-            <p>Version 1.1 | January 2026</p>
+            <p>Version 1.2 | February 2026</p>
             <p>Full-Stack Application: React + Node.js + Express + SQLite + Firebase</p>
-            <p style="margin-top: 10px; font-size: 0.9em;">Features: Multi-language (10 Indian languages) | Crops to Avoid Analysis | Google OAuth</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Algorithm: WMFS (Weighted Multi-Factor Scoring) | Features: Multi-language | Crops to Avoid | Google OAuth</p>
         </div>
     </div>
 </body>
