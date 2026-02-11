@@ -1,21 +1,23 @@
 import { useWeatherData } from "../../hooks/useWeatherData";
+import { useLanguage } from "../../i18n/LanguageContext";
 import Card from "../shared/Card";
 import Button from "../shared/Button";
 import "./WeatherTrends.css";
 
 const WeatherTrends = () => {
   const { forecast, status, refresh, location } = useWeatherData();
+  const { t, formatMessage } = useLanguage();
 
   return (
-    <Card title="🌤️ Live Weather Trends">
+    <Card title={t.liveWeatherTrends}>
       {!location ? (
-        <p className="weather__empty">Please enter your location in the profile to see live weather.</p>
+        <p className="weather__empty">{t.weatherEmpty}</p>
       ) : status === "loading" ? (
-        <p className="weather__loading">Loading weather for {location}...</p>
+        <p className="weather__loading">{formatMessage("weatherLoading", { location })}</p>
       ) : status === "failed" ? (
         <div className="weather__error">
-          <p>Failed to fetch weather data for {location}.</p>
-          <Button label="Retry" onClick={refresh} />
+          <p>{formatMessage("weatherError", { location })}</p>
+          <Button label={t.retry} onClick={refresh} />
         </div>
       ) : forecast.length > 0 ? (
         <>
@@ -34,7 +36,7 @@ const WeatherTrends = () => {
           </div>
         </>
       ) : (
-        <p className="weather__empty">No weather data available.</p>
+        <p className="weather__empty">{t.weatherNoData}</p>
       )}
     </Card>
   );

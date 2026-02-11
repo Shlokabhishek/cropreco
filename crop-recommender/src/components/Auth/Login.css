@@ -113,6 +113,17 @@
   text-align: center;
 }
 
+.login-email-error {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid #dc2626;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
 .login-google-notice {
   margin-top: 0.75rem;
   padding: 0.6rem 0.75rem;

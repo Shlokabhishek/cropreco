@@ -1,30 +1,32 @@
 import { useMarketData } from "../../hooks/useMarketData";
+import { useLanguage } from "../../i18n/LanguageContext";
 import Card from "../shared/Card";
 import "./PriceAnalysis.css";
 
 const PriceAnalysis = () => {
   const { trends, status } = useMarketData();
+  const { t } = useLanguage();
 
   const getTrendAnalysis = (change: number) => {
-    if (change > 5) return { text: "Strong Uptrend", class: "trend-strong-up" };
-    if (change > 0) return { text: "Uptrend", class: "trend-up" };
-    if (change < -5) return { text: "Strong Downtrend", class: "trend-strong-down" };
-    if (change < 0) return { text: "Downtrend", class: "trend-down" };
-    return { text: "Stable", class: "trend-stable" };
+    if (change > 5) return { text: t.strongUptrend, class: "trend-strong-up" };
+    if (change > 0) return { text: t.uptrend, class: "trend-up" };
+    if (change < -5) return { text: t.strongDowntrend, class: "trend-strong-down" };
+    if (change < 0) return { text: t.downtrend, class: "trend-down" };
+    return { text: t.stable, class: "trend-stable" };
   };
 
   const getRecommendation = (change: number) => {
-    if (change > 5) return "Excellent time to sell - prices rising sharply";
-    if (change > 0) return "Good time to sell - prices increasing";
-    if (change < -5) return "Hold off selling - prices falling significantly";
-    if (change < 0) return "Consider holding - prices declining";
-    return "Market stable - monitor for changes";
+    if (change > 5) return t.sellExcellent;
+    if (change > 0) return t.sellGood;
+    if (change < -5) return t.holdOff;
+    if (change < 0) return t.considerHolding;
+    return t.marketStable;
   };
 
   return (
-    <Card title="💰 Price Analysis">
+    <Card title={t.priceAnalysis}>
       {status === "loading" ? (
-        <p className="price__loading">Loading analysis...</p>
+        <p className="price__loading">{t.priceAnalysisLoading}</p>
       ) : trends.length > 0 ? (
         <div className="price__analysis">
           {trends.map((trend, idx) => {
@@ -41,25 +43,25 @@ const PriceAnalysis = () => {
                 </div>
                 <div className="price__details">
                   <div className="price__stat">
-                    <span className="price__label">Current Price</span>
+                    <span className="price__label">{t.currentPrice}</span>
                     <span className="price__value">₹{trend.price.toLocaleString()}</span>
                   </div>
                   <div className="price__stat">
-                    <span className="price__label">Change</span>
+                    <span className="price__label">{t.priceChange}</span>
                     <span className={`price__change ${trend.change >= 0 ? "positive" : "negative"}`}>
                       {trend.change >= 0 ? "+" : ""}{trend.change.toFixed(1)}%
                     </span>
                   </div>
                 </div>
                 <div className="price__recommendation">
-                  <strong>Recommendation:</strong> {recommendation}
+                  <strong>{t.recommendation}:</strong> {recommendation}
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <p className="price__empty">No price data available.</p>
+        <p className="price__empty">{t.priceAnalysisEmpty}</p>
       )}
     </Card>
   );

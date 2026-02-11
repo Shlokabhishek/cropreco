@@ -1,11 +1,22 @@
 # 🌾 Crop Recommender
 
-A full-stack React + TypeScript + Node.js application that provides personalized crop recommendations for farmers based on soil type, weather patterns, market trends, and budget constraints.
+A full-stack React + TypeScript + Node.js application that provides personalized crop recommendations for farmers based on soil type, weather patterns, market trends, and budget constraints. **Now with Machine Learning!**
+
+## ✨ New: AI-Powered Recommendations
+
+The application now includes a **TensorFlow.js neural network model** that:
+- 🧠 Learns from 19,000+ historical crop records
+- 🎯 Predicts crop yields with 85%+ confidence
+- 📈 Enhances recommendations with ML-based suitability scores
+- 🚀 Runs entirely in your browser (no server needed)
+
+👉 **[See ML Model Documentation](./ML_MODEL_DOCUMENTATION.md)** for details.
 
 ## Features
 
 ### Frontend
 - **🔐 Authentication** - Secure JWT-based login/registration system
+- **🧠 ML-Powered Recommendations** - Neural network model for yield prediction
 - **👤 Farmer Profile Management** - Comprehensive profile with:
   - Location input for live weather data
   - Soil quality selection (with default recommendation fallback)
@@ -15,6 +26,7 @@ A full-stack React + TypeScript + Node.js application that provides personalized
   - OpenWeather API integration
   - 7-day forecast
 - **🌾 Crop Recommendations** - AI-powered suggestions
+  - ML model + traditional algorithms (hybrid approach)
   - Considers soil quality, weather, and location
   - Budget-conscious suggestions
   - Historical recommendation tracking
@@ -41,6 +53,7 @@ A full-stack React + TypeScript + Node.js application that provides personalized
 - **Framework**: React 18 with TypeScript
 - **State Management**: Redux Toolkit
 - **Build Tool**: Vite
+- **Machine Learning**: TensorFlow.js (Neural Networks)
 - **Data Processing**: danfojs, TensorFlow.js
 - **Charting**: Plotly.js, Recharts
 - **Testing**: Vitest, React Testing Library

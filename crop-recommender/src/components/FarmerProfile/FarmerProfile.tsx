@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../state/store";
 import { updateProfile } from "../../state/slices/userSlice";
 import { clearRecommendations } from "../../state/slices/cropSlice";
+import { useLanguage } from "../../i18n/LanguageContext";
 import Card from "../shared/Card";
 import Input from "../shared/Input";
 import Button from "../shared/Button";
@@ -11,6 +12,7 @@ import "./FarmerProfile.css";
 const FarmerProfile = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state: RootState) => state.user.profile);
+  const { t } = useLanguage();
 
   const handleLocationChange = (location: string) => {
     dispatch(updateProfile({ location }));
@@ -27,17 +29,17 @@ const FarmerProfile = () => {
   };
 
   return (
-    <Card title="👤 Farmer Profile">
+    <Card title={`👤 ${t.farmerProfile}`}>
       <div className="profile__fields">
         <Input
-          label="Location (City)"
+          label={t.location}
           value={profile.location}
           onChange={handleLocationChange}
-          placeholder="e.g., Bangalore"
+          placeholder={t.locationPlaceholder}
         />
 
         <div className="profile__select-wrapper">
-          <label className="profile__label">State *</label>
+          <label className="profile__label">{t.stateRequired}</label>
           <select
             className="profile__select"
             value={profile.state}
@@ -52,7 +54,7 @@ const FarmerProfile = () => {
         </div>
 
         <div className="profile__select-wrapper">
-          <label className="profile__label">Soil Type *</label>
+          <label className="profile__label">{t.soilTypeRequired}</label>
           <select
             className="profile__select"
             value={profile.soilType}
@@ -67,13 +69,13 @@ const FarmerProfile = () => {
         </div>
 
         <div className="profile__select-wrapper">
-          <label className="profile__label">Season</label>
+          <label className="profile__label">{t.season}</label>
           <select
             className="profile__select"
             value={profile.season || ""}
             onChange={(e) => dispatch(updateProfile({ season: e.target.value || undefined }))}
           >
-            <option value="">All Seasons</option>
+            <option value="">{t.allSeasons}</option>
             {SEASONS.map((season) => (
               <option key={season} value={season}>
                 {season}
@@ -83,19 +85,19 @@ const FarmerProfile = () => {
         </div>
 
         <Input
-          label="Farm Size (acres) *"
+          label={t.farmSize}
           type="number"
           value={profile.acreage}
           onChange={(v) => dispatch(updateProfile({ acreage: parseFloat(v) || 0 }))}
-          placeholder="Land size in acres"
+          placeholder={t.farmSizePlaceholder}
         />
 
         <Input
-          label="Budget (₹) *"
+          label={t.budgetRequired}
           type="number"
           value={profile.budget}
           onChange={(v) => dispatch(updateProfile({ budget: parseFloat(v) || 0 }))}
-          placeholder="Investment budget"
+          placeholder={t.budgetPlaceholder}
         />
 
         <div className="profile__checkbox-wrapper">
@@ -116,7 +118,7 @@ const FarmerProfile = () => {
         </div>
 
         <div className="profile__actions">
-          <Button label="Update & Refresh Recommendations" onClick={handleSave} />
+          <Button label={t.saveProfile} onClick={handleSave} />
         </div>
       </div>
     </Card>

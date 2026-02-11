@@ -13,6 +13,9 @@ import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
   User,
   Auth
 } from "firebase/auth";
@@ -132,6 +135,163 @@ export const signInWithGoogle = async (): Promise<{
         }
     }
     
+    return {
+      success: false,
+      error: errorMessage
+    };
+  }
+};
+
+// Sign up with Email and Password
+export const signUpWithEmail = async (
+  email: string,
+  password: string,
+  name?: string
+): Promise<{
+  success: boolean;
+  user?: {
+    id: string;
+    email: string;
+    name: string;
+    photoURL?: string;
+  };
+  error?: string;
+}> => {
+  // Check if Firebase is configured
+  if (!isFirebaseConfigured()) {
+    return {
+      success: false,
+      error: "Authentication is not configured. Please set up Firebase credentials in .env.local file."
+    };
+  }
+
+  try {
+    if (!auth) {
+      throw new Error("Firebase not initialized. Please restart the application.");
+    }
+
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Update profile with display name if provided
+    if (name) {
+      await updateProfile(user, {
+        displayName: name
+      });
+    }
+
+    return {
+      success: true,
+      user: {
+        id: user.uid,
+        email: user.email || "",
+        name: name || user.email?.split("@")[0] || "Farmer",
+        photoURL: user.photoURL || undefined
+      }
+    };
+  } catch (error: any) {
+    console.error("Email sign-up error:", error);
+
+    let errorMessage = "Failed to create account";
+
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        errorMessage = "This email is already registered. Please sign in instead.";
+        break;
+      case "auth/invalid-email":
+        errorMessage = "Invalid email address.";
+        break;
+      case "auth/operation-not-allowed":
+        errorMessage = "Email/password sign-up is not enabled. Please contact support.";
+        break;
+      case "auth/weak-password":
+        errorMessage = "Password is too weak. Please use at least 6 characters.";
+        break;
+      case "auth/network-request-failed":
+        errorMessage = "Network error. Please check your internet connection.";
+        break;
+      default:
+        if (error.message) {
+          errorMessage = error.message;
+        }
+    }
+
+    return {
+      success: false,
+      error: errorMessage
+    };
+  }
+};
+
+// Sign in with Email and Password
+export const signInWithEmail = async (
+  email: string,
+  password: string
+): Promise<{
+  success: boolean;
+  user?: {
+    id: string;
+    email: string;
+    name: string;
+    photoURL?: string;
+  };
+  error?: string;
+}> => {
+  // Check if Firebase is configured
+  if (!isFirebaseConfigured()) {
+    return {
+      success: false,
+      error: "Authentication is not configured. Please set up Firebase credentials in .env.local file."
+    };
+  }
+
+  try {
+    if (!auth) {
+      throw new Error("Firebase not initialized. Please restart the application.");
+    }
+
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    return {
+      success: true,
+      user: {
+        id: user.uid,
+        email: user.email || "",
+        name: user.displayName || user.email?.split("@")[0] || "Farmer",
+        photoURL: user.photoURL || undefined
+      }
+    };
+  } catch (error: any) {
+    console.error("Email sign-in error:", error);
+
+    let errorMessage = "Failed to sign in";
+
+    switch (error.code) {
+      case "auth/invalid-email":
+        errorMessage = "Invalid email address.";
+        break;
+      case "auth/user-disabled":
+        errorMessage = "This account has been disabled.";
+        break;
+      case "auth/user-not-found":
+        errorMessage = "No account found with this email. Please sign up first.";
+        break;
+      case "auth/wrong-password":
+        errorMessage = "Incorrect password. Please try again.";
+        break;
+      case "auth/invalid-credential":
+        errorMessage = "Invalid email or password. Please try again.";
+        break;
+      case "auth/network-request-failed":
+        errorMessage = "Network error. Please check your internet connection.";
+        break;
+      default:
+        if (error.message) {
+          errorMessage = error.message;
+        }
+    }
+
     return {
       success: false,
       error: errorMessage

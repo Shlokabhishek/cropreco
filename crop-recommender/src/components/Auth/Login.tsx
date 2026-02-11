@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../state/slices/authSlice";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { signInWithGoogle, isFirebaseConfigured } from "../../services/firebase";
+import { 
+  signInWithGoogle, 
+  signInWithEmail, 
+  signUpWithEmail, 
+  isSupabaseConfigured 
+} from "../../services/supabase";
 import Card from "../shared/Card";
 import Input from "../shared/Input";
 import Button from "../shared/Button";
@@ -16,17 +21,44 @@ const Login = () => {
   const [name, setName] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      // Mock authentication - in production, call real API
-      dispatch(login({
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name: name || email.split("@")[0]
-      }));
+    setEmailError(null);
+    
+    if (!email || !password) {
+      setEmailError("Please enter both email and password");
+      return;
+    }
+
+    if (isSignup && !name) {
+      setEmailError("Please enter your name");
+      return;
+    }
+
+    setIsEmailLoading(true);
+
+    try {
+      const result = isSignup 
+        ? await signUpWithEmail(email, password, name)
+        : await signInWithEmail(email, password);
+
+      if (result.success && result.user) {
+        dispatch(login({
+          id: result.user.id,
+          email: result.user.email,
+          name: result.user.name
+        }));
+      } else if (result.error) {
+        setEmailError(result.error);
+      }
+    } catch (error) {
+      setEmailError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsEmailLoading(false);
     }
   };
 
@@ -53,7 +85,7 @@ const Login = () => {
     }
   };
 
-  const firebaseReady = isFirebaseConfigured();
+  const firebaseReady = isSupabaseConfigured();
 
   return (
     <div className="login-container">
@@ -64,8 +96,7 @@ const Login = () => {
             className={`login-google-btn ${isGoogleLoading ? 'login-google-btn--loading' : ''}`}
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
-            type="button"
-          >
+            type="button">
             {isGoogleLoading ? (
               <span className="login-google-spinner"></span>
             ) : (
@@ -88,7 +119,7 @@ const Login = () => {
           {!firebaseReady && (
             <div className="login-google-notice">
               <span className="login-google-notice-icon">ℹ️</span>
-              <span>Configure Firebase in .env.local for Google Sign-In</span>
+              <span>Configure Supabase in .env.local for Google Sign-In</span>
             </div>
           )}
         </div>
@@ -100,12 +131,19 @@ const Login = () => {
 
         {/* Email/Password Form */}
         <form onSubmit={handleSubmit} className="login-form">
+          {emailError && (
+            <div className="login-email-error">
+              {emailError}
+            </div>
+          )}
+          
           {isSignup && (
             <Input
               label={t.name}
               value={name}
               onChange={setName}
               placeholder="Enter your name"
+              disabled={isEmailLoading}
             />
           )}
           <Input
@@ -114,16 +152,22 @@ const Login = () => {
             value={email}
             onChange={setEmail}
             placeholder="farmer@example.com"
+            disabled={isEmailLoading}
           />
           <Input
             label={t.password}
             type="password"
             value={password}
             onChange={setPassword}
-            placeholder="Enter password"
+            placeholder="Enter password (min. 6 characters)"
+            disabled={isEmailLoading}
           />
           <div className="login-actions">
-            <Button label={isSignup ? t.signupButton : t.loginButton} type="submit" />
+            <Button 
+              label={isEmailLoading ? "Processing..." : (isSignup ? t.signupButton : t.loginButton)} 
+              type="submit" 
+              disabled={isEmailLoading}
+            />
           </div>
           <p className="login-toggle">
             {isSignup ? t.hasAccount : t.noAccount}

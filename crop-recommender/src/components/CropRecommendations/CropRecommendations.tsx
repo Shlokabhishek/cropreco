@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCropRecommendation } from "../../hooks/useCropRecommendation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../state/store";
+import { useLanguage } from "../../i18n/LanguageContext";
 import Card from "../shared/Card";
 import Button from "../shared/Button";
 import "./CropRecommendations.css";
@@ -9,6 +10,7 @@ import "./CropRecommendations.css";
 const CropRecommendations = () => {
   const { recommendations, status, refresh, farmingTypes } = useCropRecommendation();
   const profile = useSelector((state: RootState) => state.user.profile);
+  const { t, formatMessage } = useLanguage();
   const [activeTab, setActiveTab] = useState<"crops" | "farming">("crops");
   
   console.log("CropRecommendations render:", { 
@@ -27,13 +29,17 @@ const CropRecommendations = () => {
   };
 
   return (
-    <Card title="🌾 Recommended Crops">
+    <Card title={t.recommendedCrops}>
       <div className="crop__header">
         <p className="crop__subtitle">
-          Based on {profile.state}, {profile.acreage} acres, ₹{profile.budget.toLocaleString('en-IN')} budget
-          {profile.multipleCrops && <span className="crop__subtitle-badge"> 🌱 Multiple Crops Mode</span>}
+          {formatMessage("basedOn", { 
+            state: profile.state, 
+            acreage: profile.acreage.toString(), 
+            budget: profile.budget.toLocaleString('en-IN') 
+          })}
+          {profile.multipleCrops && <span className="crop__subtitle-badge"> 🌱 {t.multipleCrops}</span>}
         </p>
-        <Button label="🔄 Refresh Prices" onClick={handleRefresh} disabled={status === "loading"} />
+        <Button label={t.refreshPrices} onClick={handleRefresh} disabled={status === "loading"} />
       </div>
       
       {/* Tab Switcher */}
@@ -42,13 +48,13 @@ const CropRecommendations = () => {
           className={`crop__tab ${activeTab === "crops" ? "crop__tab--active" : ""}`}
           onClick={() => setActiveTab("crops")}
         >
-          🌱 Crop Recommendations
+          {t.cropRecommendations}
         </button>
         <button 
           className={`crop__tab ${activeTab === "farming" ? "crop__tab--active" : ""}`}
           onClick={() => setActiveTab("farming")}
         >
-          🚜 Farming Types
+          {t.farmingTypes}
         </button>
       </div>
       
@@ -61,7 +67,7 @@ const CropRecommendations = () => {
                   {idx + 1}. {farming.type}
                 </h3>
                 <div className={`farming__score ${farming.suitability >= 0.7 ? "farming__score--high" : farming.suitability >= 0.5 ? "farming__score--medium" : "farming__score--low"}`}>
-                  {(farming.suitability * 100).toFixed(0)}% Match
+                  {(farming.suitability * 100).toFixed(0)}% {t.match}
                 </div>
               </div>
               
@@ -69,7 +75,7 @@ const CropRecommendations = () => {
               
               <div className="farming__details">
                 <div className="farming__section">
-                  <h4 className="farming__section-title">✅ Benefits</h4>
+                  <h4 className="farming__section-title">✅ {t.benefits}</h4>
                   <ul className="farming__benefits">
                     {farming.benefits.map((benefit, i) => (
                       <li key={i}>{benefit}</li>
@@ -78,7 +84,7 @@ const CropRecommendations = () => {
                 </div>
                 
                 <div className="farming__section">
-                  <h4 className="farming__section-title">⚠️ Challenges</h4>
+                  <h4 className="farming__section-title">⚠️ {t.challenges}</h4>
                   <ul className="farming__challenges">
                     {farming.challenges.map((challenge, i) => (
                       <li key={i}>{challenge}</li>
@@ -87,7 +93,7 @@ const CropRecommendations = () => {
                 </div>
                 
                 <div className="farming__section">
-                  <h4 className="farming__section-title">🌾 Best Crops</h4>
+                  <h4 className="farming__section-title">🌾 {t.bestCrops}</h4>
                   <div className="farming__crops-tags">
                     {farming.recommendedCrops.map((crop, i) => (
                       <span key={i} className="farming__crop-tag">{crop}</span>
@@ -101,12 +107,12 @@ const CropRecommendations = () => {
       ) : status === "loading" ? (
         <div className="crop__loading">
           <div className="crop__spinner"></div>
-          <p>Fetching live market prices and analyzing best crops...</p>
+          <p>{t.fetchingPrices}</p>
         </div>
       ) : status === "failed" ? (
         <div className="crop__error">
-          <p>Failed to load recommendations. Please try again.</p>
-          <Button label="Retry" onClick={handleRefresh} />
+          <p>{t.failedToLoad}</p>
+          <Button label={t.retry} onClick={handleRefresh} />
         </div>
       ) : recommendations.length > 0 ? (
         <div className="crop__list">
@@ -118,7 +124,7 @@ const CropRecommendations = () => {
                   {crop.season && <span className="crop__season"> ({crop.season.trim()})</span>}
                 </h3>
                 <div className="crop__score">
-                  Score: <strong>{(crop.score * 100).toFixed(0)}%</strong>
+                  {t.score}: <strong>{(crop.score * 100).toFixed(0)}%</strong>
                 </div>
               </div>
               
@@ -133,7 +139,7 @@ const CropRecommendations = () => {
               <div className="crop__price-badge">
                 <span className="crop__live-indicator">●</span>
                 <span className="crop__live-price">
-                  {formatCurrency(crop.livePrice || 0)}/quintal
+                  {formatCurrency(crop.livePrice || 0)}/{t.quintal}
                 </span>
                 <span className="crop__price-source">
                   ({crop.priceSource || "MSP"})
@@ -142,11 +148,11 @@ const CropRecommendations = () => {
               
               <div className="crop__metrics">
                 <div className="crop__metric">
-                  <span className="crop__metric-label">Expected Yield</span>
-                  <span className="crop__metric-value">{crop.yield.toFixed(2)} tonnes</span>
+                  <span className="crop__metric-label">{t.expectedYield}</span>
+                  <span className="crop__metric-value">{crop.yield.toFixed(2)} {t.tonnes}</span>
                 </div>
                 <div className="crop__metric crop__metric--profit">
-                  <span className="crop__metric-label">Estimated Profit</span>
+                  <span className="crop__metric-label">{t.estimatedProfit}</span>
                   <span className={`crop__metric-value ${crop.profit >= 0 ? 'crop__profit' : 'crop__loss'}`}>
                     {formatCurrency(crop.profit)}
                   </span>
@@ -155,31 +161,31 @@ const CropRecommendations = () => {
 
               <div className="crop__financials">
                 <div className="crop__financial-row">
-                  <span>Revenue</span>
+                  <span>{t.revenue}</span>
                   <span className="crop__revenue">{formatCurrency(crop.estimatedRevenue)}</span>
                 </div>
                 <div className="crop__financial-row crop__total-cost">
-                  <span>Total Cost</span>
+                  <span>{t.totalCost}</span>
                   <span>{formatCurrency(crop.estimatedCost)}</span>
                 </div>
                 
                 <details className="crop__breakdown">
-                  <summary className="crop__breakdown-toggle">View Cost Breakdown</summary>
+                  <summary className="crop__breakdown-toggle">{t.costBreakdown}</summary>
                   <div className="crop__breakdown-content">
                     <div className="crop__breakdown-item">
-                      <span>Fertilizer</span>
+                      <span>{t.fertilizer}</span>
                       <span>{formatCurrency(crop.fertilizerCost)}</span>
                     </div>
                     <div className="crop__breakdown-item">
-                      <span>Pesticide</span>
+                      <span>{t.pesticide}</span>
                       <span>{formatCurrency(crop.pesticideCost)}</span>
                     </div>
                     <div className="crop__breakdown-item">
-                      <span>Labor</span>
+                      <span>{t.labor}</span>
                       <span>{formatCurrency(crop.laborCost)}</span>
                     </div>
                     <div className="crop__breakdown-item">
-                      <span>Seeds</span>
+                      <span>{t.seeds}</span>
                       <span>{formatCurrency(crop.seedCost)}</span>
                     </div>
                   </div>
@@ -190,9 +196,9 @@ const CropRecommendations = () => {
         </div>
       ) : (
         <div className="crop__empty">
-          <p>No recommendations available for {profile.state}.</p>
-          <p className="crop__empty-hint">Try adjusting your budget or selecting a different state.</p>
-          <Button label="Refresh" onClick={handleRefresh} />
+          <p>{formatMessage("noRecommendations", { state: profile.state })}</p>
+          <p className="crop__empty-hint">{t.tryAdjusting}</p>
+          <Button label={t.refresh} onClick={handleRefresh} />
         </div>
       )}
     </Card>

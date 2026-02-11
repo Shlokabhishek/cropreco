@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./state/store";
-import { logout } from "./state/slices/authSlice";
+import { login, logout } from "./state/slices/authSlice";
 import { useLanguage } from "./i18n/LanguageContext";
+import { getCurrentSession, onAuthChange, signOutUser } from "./services/supabase";
 import Login from "./components/Auth/Login";
 import CropRecommendations from "./components/CropRecommendations/CropRecommendations";
 import CropsToAvoid from "./components/CropsToAvoid/CropsToAvoid";
@@ -10,6 +11,7 @@ import FarmerProfile from "./components/FarmerProfile/FarmerProfile";
 import WeatherTrends from "./components/WeatherTrends/WeatherTrends";
 import PriceAnalysis from "./components/PriceAnalysis/PriceAnalysis";
 import LanguageSelector from "./components/LanguageSelector/LanguageSelector";
+import { MLModelManager } from "./components/MLModelManager";
 import { useCropRecommendation } from "./hooks/useCropRecommendation";
 
 function App() {
@@ -20,8 +22,42 @@ function App() {
 	const { t, formatMessage } = useLanguage();
 	const { cropsToAvoid, status } = useCropRecommendation();
 
-	const handleProfileClick = () => {
+	// Handle Supabase auth state changes and OAuth callback
+	useEffect(() => {
+		// Check for existing session on mount
+		getCurrentSession().then((session) => {
+			if (session?.user) {
+				dispatch(login({
+					id: session.user.id,
+					email: session.user.email || "",
+					name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "Farmer"
+				}));
+				setShowLoginModal(false);
+			}
+		});
+
+		// Listen for auth changes
+		const unsubscribe = onAuthChange((user) => {
+			if (user) {
+				dispatch(login({
+					id: user.id,
+					email: user.email || "",
+					name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Farmer"
+				}));
+				setShowLoginModal(false);
+			} else {
+				dispatch(logout());
+			}
+		});
+
+		return () => {
+			unsubscribe();
+		};
+	}, [dispatch]);
+
+	const handleProfileClick = async () => {
 		if (isAuthenticated) {
+			await signOutUser();
 			dispatch(logout());
 		} else {
 			setShowLoginModal(true);
@@ -73,6 +109,10 @@ function App() {
 					</button>
 				</div>
 			</header>
+
+			<div style={{ marginBottom: "20px" }}>
+				<MLModelManager />
+			</div>
 
 			<div className="grid two">
 				<FarmerProfile />

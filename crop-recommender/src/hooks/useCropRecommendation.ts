@@ -64,8 +64,8 @@ export const useCropRecommendation = () => {
 				multipleCrops: profile.multipleCrops
 			};
 			
-			// Get recommendations with live prices
-			const recommended = recommendCrops(cropData, profileData, livePrices);
+			// Get recommendations with live prices (now async with ML)
+			const recommended = await recommendCrops(cropData, profileData, livePrices);
 			
 			console.log("Recommendations generated:", recommended.length);
 			

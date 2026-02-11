@@ -1,4 +1,5 @@
 import { MARKET_PRICES } from "./constants";
+import { predictCropYield, isModelAvailable } from "./modelTraining";
 
 export type FarmingType = {
   type: string;
@@ -369,11 +370,11 @@ function calculateSustainableScore(profile: Profile): number {
   return Math.min(score, 1);
 }
 
-export function recommendCrops(
+export async function recommendCrops(
   cropData: CropData[],
   profile: Profile,
   livePrices?: Record<string, { price: number; source: string }>
-): CropRecommendation[] {
+): Promise<CropRecommendation[]> {
   console.log("Filtering for state:", profile.state, "season:", profile.season || "any");
   console.log("Total crop data entries:", cropData.length);
   
@@ -436,6 +437,13 @@ export function recommendCrops(
   console.log("Unique crops found:", cropMap.size);
   
   const recommendations: CropRecommendation[] = [];
+  const mlModelAvailable = isModelAvailable();
+  
+  if (mlModelAvailable) {
+    console.log("Using ML model for enhanced predictions");
+  }
+  
+  const cropPredictions: Array<Promise<void>> = [];
   
   cropMap.forEach((data, cropName) => {
     // Average the values using median for more stable results
@@ -478,7 +486,31 @@ export function recommendCrops(
     const yieldScore = Math.min(avgYield / 10, 1);
     const roiScore = totalCost > 0 ? Math.min((profit / totalCost), 1) : 0;
     
-    const finalScore = (budgetScore * 0.3 + profitScore * 0.3 + yieldScore * 0.2 + roiScore * 0.2);
+    // Base score calculation
+    let finalScore = (budgetScore * 0.3 + profitScore * 0.3 + yieldScore * 0.2 + roiScore * 0.2);
+    
+    // Enhance with ML prediction if available
+    if (mlModelAvailable) {
+      const avgRainfall = data.reduce((s, c) => s + c.rainfall, 0) / data.length;
+      cropPredictions.push(
+        predictCropYield(
+          cropName,
+          avgRainfall,
+          avgFertilizer,
+          avgPesticide,
+          profile.acreage,
+          season,
+          profile.soilType
+        ).then(mlPrediction => {
+          if (mlPrediction) {
+            // Blend ML score with traditional score (70% traditional, 30% ML)
+            const mlScore = mlPrediction.suitability / 100;
+            finalScore = (finalScore * 0.7) + (mlScore * 0.3);
+            console.log(`${cropName}: ML suitability = ${mlPrediction.suitability}, Enhanced score = ${finalScore.toFixed(3)}`);
+          }
+        })
+      );
+    }
     
     recommendations.push({
       name: cropName,
@@ -530,6 +562,13 @@ export function recommendCrops(
     result = getMultipleCropsRecommendation(result, profile);
   } else {
     result = result.slice(0, 8);
+  }
+  
+  // Wait for all ML predictions to complete if applicable
+  if (mlModelAvailable && cropPredictions.length > 0) {
+    await Promise.all(cropPredictions);
+    // Re-sort after ML scores are applied
+    result = result.sort((a, b) => b.score - a.score);
   }
   
   console.log("Final recommendations:", result.length);
