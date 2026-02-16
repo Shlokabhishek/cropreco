@@ -214,7 +214,162 @@
         </div>
     </div>
 
-    <h3>1.7 Budget Constraint Relaxation</h3>
+    <h3>1.7 Machine Learning Integration (TensorFlow.js Neural Network)</h3>
+    <p>
+        The system integrates a <strong>4-layer neural network</strong> built with TensorFlow.js to enhance recommendations 
+        with AI-powered yield predictions. When the ML model is available, it provides additional suitability scoring that 
+        is blended with traditional algorithms.
+    </p>
+
+    <div class="algorithm-box">
+        <h4>Neural Network Architecture</h4>
+        <div class="code-block">
+Input Layer: 6 features → [rainfall, fertilizer, pesticide, acreage, season_encoded, soil_encoded]<br>
+    ↓<br>
+Dense Layer 1: 64 neurons, ReLU activation, He Normal initialization<br>
+    ↓<br>
+Dropout Layer 1: 20% dropout rate<br>
+    ↓<br>
+Dense Layer 2: 32 neurons, ReLU activation, He Normal initialization<br>
+    ↓<br>
+Dropout Layer 2: 20% dropout rate<br>
+    ↓<br>
+Dense Layer 3: 16 neurons, ReLU activation, He Normal initialization<br>
+    ↓<br>
+Output Layer: 1 neuron, Linear activation → Predicted Yield (tonnes/hectare)<br>
+        </div>
+
+        <h4>Model Training Configuration</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Optimizer</td>
+                <td>Adam (learning rate: 0.001)</td>
+            </tr>
+            <tr>
+                <td>Loss Function</td>
+                <td>Mean Squared Error (MSE)</td>
+            </tr>
+            <tr>
+                <td>Metrics</td>
+                <td>Mean Absolute Error (MAE)</td>
+            </tr>
+            <tr>
+                <td>Epochs</td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td>Batch Size</td>
+                <td>32</td>
+            </tr>
+            <tr>
+                <td>Validation Split</td>
+                <td>20% (80/20 train-validation)</td>
+            </tr>
+            <tr>
+                <td>Training Data</td>
+                <td>~15,000 records (from 19,691 total after filtering)</td>
+            </tr>
+        </table>
+
+        <h4>Feature Encoding</h4>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>Encoding Method</th>
+            </tr>
+            <tr>
+                <td>Rainfall</td>
+                <td>Numeric (mm) - Z-score normalized</td>
+            </tr>
+            <tr>
+                <td>Fertilizer</td>
+                <td>Numeric (kg/ha) - Z-score normalized</td>
+            </tr>
+            <tr>
+                <td>Pesticide</td>
+                <td>Numeric (kg/ha) - Z-score normalized</td>
+            </tr>
+            <tr>
+                <td>Acreage</td>
+                <td>Numeric (hectares) - Z-score normalized</td>
+            </tr>
+            <tr>
+                <td>Season</td>
+                <td>Ordinal encoding: Kharif(0), Rabi(1), Zaid(2), Summer(3), Winter(4), Autumn(5), Whole Year(6), Unknown(7)</td>
+            </tr>
+            <tr>
+                <td>Soil Type</td>
+                <td>Ordinal encoding: Loamy(0), Sandy(1), Clay(2), Red(3), Black(4), Alluvial(5), Unknown(6)</td>
+            </tr>
+        </table>
+
+        <h4>Z-Score Normalization Formula</h4>
+        <div class="formula">
+            normalized_value = (value - mean) / std_deviation<br>
+            <br>
+            Where:<br>
+            mean = average of all values for the feature<br>
+            std_deviation = standard deviation of all values
+        </div>
+
+        <h4>Hybrid Scoring Integration</h4>
+        <p>When the ML model is available, the final score is calculated as:</p>
+        <div class="formula">
+            traditionalScore = (budgetScore × 0.3) + (profitScore × 0.3) + (yieldScore × 0.2) + (roiScore × 0.2)<br>
+            <br>
+            mlSuitability = neuralNetwork.predict(features) → [0, 1] (normalized)<br>
+            <br>
+            <strong>finalScore = (traditionalScore × 0.7) + (mlSuitability × 0.3)</strong>
+        </div>
+        <p>
+            This <strong>70/30 hybrid approach</strong> ensures that domain knowledge from traditional algorithms remains dominant 
+            while benefiting from ML's ability to learn complex patterns from historical data.
+        </p>
+
+        <h4>Model Prediction Output</h4>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>yieldPrediction</td>
+                <td>Predicted crop yield in tonnes/hectare</td>
+            </tr>
+            <tr>
+                <td>suitability</td>
+                <td>Normalized suitability score [0, 1]</td>
+            </tr>
+            <tr>
+                <td>confidence</td>
+                <td>Model confidence level based on prediction variance</td>
+            </tr>
+        </table>
+
+        <h4>Model Storage</h4>
+        <p>
+            The trained model is stored in browser's <strong>LocalStorage</strong> using TensorFlow.js's 
+            <code>localstorage://</code> backend. Model size is approximately 50-100 KB and persists across 
+            browser sessions until cache is cleared.
+        </p>
+    </div>
+
+    <div class="note">
+        <h3>📌 Benefits of ML Integration</h3>
+        <ul>
+            <li><strong>Pattern Recognition:</strong> Learns complex relationships between inputs and yields</li>
+            <li><strong>Data-Driven:</strong> Based on 19,000+ real agricultural records</li>
+            <li><strong>Offline Operation:</strong> Runs entirely in browser after training</li>
+            <li><strong>Privacy:</strong> No data sent to external servers</li>
+            <li><strong>Continuous Improvement:</strong> Can be retrained with updated data</li>
+        </ul>
+    </div>
+
+    <h3>1.8 Budget Constraint Relaxation</h3>
     <p>The algorithm implements progressive budget relaxation to ensure sufficient recommendations:</p>
 
     <div class="algorithm-box">
@@ -238,7 +393,7 @@
         <p>Prioritizes profitable crops regardless of budget, sorted by composite score.</p>
     </div>
 
-    <h3>1.8 Algorithm Output</h3>
+    <h3>1.9 Algorithm Output</h3>
     <table>
         <tr>
             <th>Field</th>
@@ -386,6 +541,11 @@ Potato → Compatible with: Onion, Cabbage, Peas, Beans<br>
             <td>O(k)</td>
         </tr>
         <tr>
+            <td>ML Predictions (if enabled)</td>
+            <td>O(k × p) where p = forward pass operations</td>
+            <td>O(m) where m = model parameters (~50KB)</td>
+        </tr>
+        <tr>
             <td>Sorting</td>
             <td>O(k × log k)</td>
             <td>O(k)</td>
@@ -406,6 +566,9 @@ Potato → Compatible with: Onion, Cabbage, Peas, Beans<br>
             <li>Local micro-conditions may differ from state-level data</li>
             <li>Assumes standard farming practices; organic/precision farming may vary</li>
             <li>Does not account for farmer's existing equipment or expertise</li>
+            <li><strong>ML model requires initial training (1-2 minutes) on first use</strong></li>
+            <li><strong>ML predictions work best for crops/regions well-represented in training data</strong></li>
+            <li><strong>Browser storage required for ML model persistence (50-100 KB)</strong></li>
         </ul>
     </div>
 

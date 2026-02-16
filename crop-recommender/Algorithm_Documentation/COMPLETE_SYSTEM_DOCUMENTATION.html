@@ -368,7 +368,7 @@
             </div>
             <div class="feature-card">
                 <h4>🌾 Crop Recommendations</h4>
-                <p>AI-powered suggestions based on soil, weather, and market conditions</p>
+                <p>AI-powered suggestions using neural network (TensorFlow.js) + traditional algorithms for hybrid predictions</p>
             </div>
             <div class="feature-card">
                 <h4>💰 Price Analysis</h4>
@@ -456,7 +456,7 @@
 │   ├── pages/                    # Page components
 │   ├── services/                 # API service layer
 │   │   ├── api.ts                # Backend API integration
-│   │   ├── firebase.ts           # Google OAuth configuration
+│   │   ├── supabase.ts           # Supabase Auth & Google OAuth
 │   │   ├── recommender.ts        # Recommendation engine
 │   │   └── weather.ts            # Weather utilities
 │   ├── state/                    # Redux store & slices
@@ -491,7 +491,7 @@
             <span class="tech-badge">TypeScript 5.9</span>
             <span class="tech-badge">Redux Toolkit</span>
             <span class="tech-badge">Vite 7.3</span>
-            <span class="tech-badge">Firebase Auth</span>
+            <span class="tech-badge">Supabase Auth</span>
             <span class="tech-badge">i18n (10 Languages)</span>
             <span class="tech-badge">Recharts</span>
             <span class="tech-badge">Plotly.js</span>
@@ -520,9 +520,9 @@
                 <td>Centralized state management</td>
             </tr>
             <tr>
-                <td>Firebase</td>
-                <td>10.7.1</td>
-                <td>Google OAuth authentication</td>
+                <td>Supabase</td>
+                <td>2.48.x</td>
+                <td>Authentication (Google OAuth + Email/Password), PostgreSQL database</td>
             </tr>
             <tr>
                 <td>Vite</td>
@@ -532,7 +532,7 @@
             <tr>
                 <td>TensorFlow.js</td>
                 <td>4.22.0</td>
-                <td>ML-powered recommendations</td>
+                <td>Neural network for crop yield prediction (4-layer MLP, 19K+ training records)</td>
             </tr>
             <tr>
                 <td>Recharts/Plotly</td>
@@ -1185,14 +1185,16 @@ market_prices (independent table)
         <h2 id="algorithms" class="page-break">7. Recommendation Algorithms</h2>
 
         <div class="success-box">
-            <h3 style="margin-top: 0; color: #1b5e20;">🧮 Algorithm Name: Weighted Multi-Factor Scoring Algorithm (WMFS)</h3>
-            <p>The Crop Recommender System uses a <strong>Weighted Multi-Factor Scoring Algorithm (WMFS)</strong> - a hybrid decision-support algorithm that combines:</p>
+            <h3 style="margin-top: 0; color: #1b5e20;">🧮 Algorithm Name: Weighted Multi-Factor Scoring Algorithm (WMFS) + Neural Network</h3>
+            <p>The Crop Recommender System uses a <strong>Hybrid Weighted Multi-Factor Scoring Algorithm (WMFS)</strong> - a decision-support algorithm that combines:</p>
             <ul>
                 <li><strong>Multi-Criteria Decision Analysis (MCDA)</strong> - Evaluates crops against multiple weighted criteria</li>
                 <li><strong>Cost-Benefit Analysis (CBA)</strong> - Calculates ROI, profit margins, and economic viability</li>
                 <li><strong>Contextual Filtering</strong> - Geographic, seasonal, and soil-based elimination</li>
                 <li><strong>Real-time Market Integration</strong> - Live price data from AGMARKNET API</li>
+                <li><strong>🧠 Machine Learning Neural Network (TensorFlow.js)</strong> - 4-layer MLP for AI-powered yield prediction</li>
             </ul>
+            <p><strong>Hybrid Scoring:</strong> 70% Traditional WMFS + 30% ML Suitability = Enhanced Recommendations</p>
         </div>
 
         <h3>7.1 Algorithm Overview: How WMFS Recommends Crops</h3>
@@ -2350,7 +2352,7 @@ npm run dev:all
             <ul>
                 <li><strong>Multi-language Support (i18n)</strong> - 10 Indian regional languages: English, Hindi, Marathi, Telugu, Tamil, Kannada, Bengali, Gujarati, Punjabi, Malayalam</li>
                 <li><strong>Crops to Avoid Analysis</strong> - Risk assessment showing crops farmers should avoid based on soil, weather, season, market, and profit margin analysis</li>
-                <li><strong>Google OAuth</strong> - Sign in with any Google account via Firebase Authentication</li>
+                <li><strong>Google OAuth</strong> - Sign in with any Google account via Supabase Authentication</li>
                 <li><strong>State-to-Language Mapping</strong> - Automatic language suggestions based on farmer's state</li>
                 <li><strong>Risk Level Indicators</strong> - High/Medium risk badges for avoided crops</li>
                 <li><strong>Alternative Crop Suggestions</strong> - Recommends safer alternatives for risky crops</li>
@@ -2396,7 +2398,7 @@ npm run dev:all
         <div style="margin-top: 60px; padding-top: 20px; border-top: 2px solid #ddd; text-align: center; color: #666;">
             <p><strong>Crop Recommender System - Complete Documentation</strong></p>
             <p>Version 1.2 | February 2026</p>
-            <p>Full-Stack Application: React + Node.js + Express + SQLite + Firebase</p>
+            <p>Full-Stack Application: React + Node.js + Express + SQLite + Supabase</p>
             <p style="margin-top: 10px; font-size: 0.9em;">Algorithm: WMFS (Weighted Multi-Factor Scoring) | Features: Multi-language | Crops to Avoid | Google OAuth</p>
         </div>
     </div>

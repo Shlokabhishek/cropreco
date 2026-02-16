@@ -147,10 +147,13 @@ export class CropMLModel {
   /**
    * Train the model on crop dataset
    */
-  async trainModel(trainingData: {
-    features: ModelInput[];
-    yields: number[];
-  }): Promise<{ loss: number; mae: number }> {
+  async trainModel(
+    trainingData: {
+      features: ModelInput[];
+      yields: number[];
+    },
+    onEpochProgress?: (epoch: number, totalEpochs: number) => void
+  ): Promise<{ loss: number; mae: number }> {
     console.log('Starting model training...');
     
     // Encode features
@@ -175,12 +178,19 @@ export class CropMLModel {
     this.model = this.buildModel(FEATURE_NAMES.length);
 
     // Train model
+    const totalEpochs = 100;
     const history = await this.model.fit(xs, ys, {
-      epochs: 100,
+      epochs: totalEpochs,
       batchSize: 32,
       validationSplit: 0.2,
       callbacks: {
         onEpochEnd: (epoch, logs) => {
+          // Report progress to UI
+          if (onEpochProgress) {
+            onEpochProgress(epoch + 1, totalEpochs);
+          }
+          
+          // Console logging every 20 epochs
           if (epoch % 20 === 0) {
             console.log(`Epoch ${epoch}: loss = ${logs?.loss.toFixed(4)}, mae = ${logs?.mae.toFixed(4)}`);
           }
@@ -324,7 +334,8 @@ export class CropMLModel {
       this.isModelLoaded = true;
       console.log(`Model loaded: ${modelName}`);
     } catch (error) {
-      console.error('Failed to load model:', error);
+      // Model not found is expected on first run - not an error
+      console.log('Model not found in storage (needs training)');
       throw new Error('Model not found. Please train a model first.');
     }
   }

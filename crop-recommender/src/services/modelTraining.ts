@@ -97,10 +97,21 @@ export async function trainCropModel(
     });
 
     const mlModel = getMLModel();
-    const metrics = await mlModel.trainModel({
-      features: trainingFeatures,
-      yields: trainingYields
-    });
+    const metrics = await mlModel.trainModel(
+      {
+        features: trainingFeatures,
+        yields: trainingYields
+      },
+      (epoch: number, totalEpochs: number) => {
+        // Progress from 50% to 85% during training
+        const trainingProgress = 50 + Math.floor((epoch / totalEpochs) * 35);
+        onProgress?.({
+          stage: 'training',
+          progress: trainingProgress,
+          message: `Training ML model... Epoch ${epoch}/${totalEpochs}`
+        });
+      }
+    );
 
     console.log('Training metrics:', metrics);
 
@@ -144,10 +155,11 @@ export async function loadExistingModel(): Promise<boolean> {
   try {
     const mlModel = getMLModel();
     await mlModel.loadModel('crop-ml-model');
-    console.log('Existing model loaded successfully');
+    console.log('✅ ML model loaded from storage');
     return true;
   } catch (error) {
-    console.log('No existing model found');
+    // This is expected on first run - model needs to be trained
+    console.log('ℹ️ No trained model found - please train the model');
     return false;
   }
 }

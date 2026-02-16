@@ -34,7 +34,7 @@
 - `src/services/recommender.ts` - Main crop recommendation algorithms
 - `src/services/preprocess.ts` - Data normalization and preprocessing
 - `src/services/weather.ts` - Weather API integration
-- `src/services/firebase.ts` - Firebase authentication service
+- `src/services/supabase.ts` - Supabase authentication service
 - `src/services/api.ts` - API client for backend communication
 - `src/services/constants.ts` - Application constants and configs
 - `src/services/dataLoader.ts` - CSV data loading utilities
@@ -270,7 +270,7 @@
 **Expected Location:** Root directory  
 
 **Contains:**
-- API keys (Firebase, Weather API, etc.)
+- API keys (Supabase, Weather API, etc.)
 - Database credentials
 - Secret tokens
 - Environment-specific configs
@@ -404,7 +404,7 @@ Loamy,Good,"Rice,Wheat,Maize",200-400
 ##### Setup Guides
 - `BACKEND_SETUP.md` - Backend installation guide
 - `BACKEND_IMPLEMENTATION.md` - Backend implementation details
-- `GOOGLE_AUTH_SETUP.md` - Firebase authentication setup
+- `GOOGLE_AUTH_SETUP.md` - Supabase authentication setup
 - `DEPLOY.md` - Deployment instructions
 
 ##### Component Documentation

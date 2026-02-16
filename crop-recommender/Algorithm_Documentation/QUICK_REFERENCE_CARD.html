@@ -53,10 +53,14 @@ Steps:<br>
                 <tr><td>5</td><td>All Data</td><td>-</td></tr>
             </table>
 
-            <h2>3. COMPOSITE SCORING</h2>
+            <h2>3. COMPOSITE SCORING (HYBRID)</h2>
             <div class="formula">
-finalScore = budgetScore×0.3 + profitScore×0.3<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ yieldScore×0.2 + roiScore×0.2<br>
+traditionalScore = budgetScore×0.3 + profitScore×0.3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ yieldScore×0.2 + roiScore×0.2<br>
+<br>
+mlSuitability = neuralNetwork.predict(features)<br>
+<br>
+<strong>finalScore = traditionalScore×0.7 + mlSuitability×0.3</strong><br>
 <br>
 budgetScore = min(1, budget/cost)<br>
 profitScore = min(1, profit/200000)<br>
@@ -86,7 +90,29 @@ roiScore = min(1, profit/cost)
         </div>
 
         <div class="column">
-            <h2>6. DATA NORMALIZATION</h2>
+            <h2>6. ML NEURAL NETWORK (TensorFlow.js)</h2>
+            <div class="box">
+                <h3>4-Layer MLP Architecture</h3>
+                <div class="formula">
+Input (6 features): rainfall, fertilizer,<br>
+&nbsp;&nbsp;pesticide, acreage, season, soil<br>
+↓<br>
+Dense(64, ReLU) + Dropout(0.2)<br>
+↓<br>
+Dense(32, ReLU) + Dropout(0.2)<br>
+↓<br>
+Dense(16, ReLU)<br>
+↓<br>
+Output(1, Linear) → Yield prediction<br>
+<br>
+Training: 19K+ records, 100 epochs<br>
+Optimizer: Adam (lr=0.001)<br>
+Loss: MSE | Metric: MAE<br>
+Storage: LocalStorage (~50KB)
+                </div>
+            </div>
+
+            <h2>7. DATA NORMALIZATION</h2>
             <div class="box">
                 <h3>Min-Max Normalization</h3>
                 <div class="formula">
@@ -103,16 +129,8 @@ Normalized Columns:<br>
                 </div>
             </div>
 
-            <h2>7. FEATURE ENGINEERING</h2>
-            <div class="formula">
-Soil_Score = 0.5 (baseline)<br>
-<br>
-Market_Score = 0.5 × Production_norm<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.4 × Yield_norm<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.1 × Price_norm
-            </div>
 
-            <h2>8. API INTEGRATION</h2>
+            <h2>9. API INTEGRATION</h2>
             <table>
                 <tr><th>API</th><th>Purpose</th><th>Cache</th><th>Timeout</th></tr>
                 <tr><td>AGMARKNET</td><td>Market prices</td><td>30 min</td><td>5s</td></tr>
@@ -148,6 +166,8 @@ If API fails → MSP fallback
                 <tr><td>CSV Parsing</td><td>200-500ms</td></tr>
                 <tr><td>Filtering</td><td>50-100ms</td></tr>
                 <tr><td>Scoring</td><td>20-40ms</td></tr>
+                <tr><td>ML Prediction</td><td>5-10ms</td></tr>
+                <tr><td>ML Training</td><td>60-120s (one-time)</td></tr>
                 <tr><td>API (Fresh)</td><td>800-1500ms</td></tr>
                 <tr><td>API (Cached)</td><td>2-5ms</td></tr>
                 <tr><td><strong>Total Pipeline</strong></td><td><strong>~1 second</strong></td></tr>

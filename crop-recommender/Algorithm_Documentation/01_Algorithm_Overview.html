@@ -52,9 +52,10 @@
     <h2>1. EXECUTIVE SUMMARY</h2>
     <p>
         The Crop Recommender System is an intelligent agricultural decision support system that leverages multiple algorithms 
-        and data processing techniques to provide personalized crop recommendations to farmers. The system integrates machine 
-        learning concepts, statistical analysis, economic modeling, and real-time data integration to optimize crop selection 
-        based on environmental factors, soil conditions, market trends, and financial constraints.
+        and data processing techniques to provide personalized crop recommendations to farmers. The system integrates <strong>machine 
+        learning neural networks (TensorFlow.js)</strong>, statistical analysis, economic modeling, and real-time data integration to optimize crop selection 
+        based on environmental factors, soil conditions, market trends, and financial constraints. The hybrid approach combines 
+        traditional rule-based algorithms (70%) with AI-powered yield predictions (30%) for enhanced accuracy.
     </p>
 
     <h2>2. SYSTEM ARCHITECTURE OVERVIEW</h2>
@@ -64,8 +65,8 @@
             <li><strong>Frontend Layer:</strong> React-based UI with Redux state management</li>
             <li><strong>Backend Layer:</strong> RESTful API built with Express.js and Node.js</li>
             <li><strong>Data Processing Layer:</strong> DanfoJS for data manipulation and analysis</li>
-            <li><strong>ML/AI Layer:</strong> TensorFlow.js integration for future advanced predictions</li>
-            <li><strong>Database Layer:</strong> SQLite for persistent storage</li>
+            <li><strong>ML/AI Layer:</strong> TensorFlow.js neural network for crop yield prediction (4-layer MLP trained on 19,000+ records)</li>
+            <li><strong>Database Layer:</strong> SQLite for persistent storage + LocalStorage for ML model</li>
             <li><strong>External APIs:</strong> OpenWeather API, AGMARKNET (Government Agriculture Market)</li>
         </ul>
     </div>
@@ -114,6 +115,11 @@
             <td>Incorporate climate data in recommendations</td>
             <td>Real-time API integration with mock fallback</td>
         </tr>
+        <tr>
+            <td><strong>Machine Learning (Neural Network)</strong></td>
+            <td>AI-powered crop yield prediction and suitability scoring</td>
+            <td>TensorFlow.js 4-layer MLP with MSE loss and Adam optimizer</td>
+        </tr>
     </table>
 
     <h2>4. KEY TECHNICAL APPROACHES</h2>
@@ -126,8 +132,9 @@
     
     <h3>4.2 Weighted Scoring System</h3>
     <p>
-        Multiple factors are combined using weighted averages to produce comprehensive suitability scores, 
-        allowing for nuanced decision-making based on farmer priorities.
+        Multiple factors are combined using weighted averages to produce comprehensive suitability scores. The system uses a 
+        <strong>hybrid approach: 70% traditional scoring</strong> (budget, profitability, yield, ROI) <strong>+ 30% ML-based suitability</strong> 
+        from neural network predictions, allowing for nuanced decision-making based on both domain knowledge and learned patterns.
     </p>
     
     <h3>4.3 Real-Time Data Integration</h3>
@@ -150,10 +157,11 @@
             <li><strong>User Profile Analysis:</strong> Extract state, acreage, soil type, budget, season</li>
             <li><strong>Data Filtering:</strong> Apply cascading filters (state → season → soil compatibility)</li>
             <li><strong>Data Aggregation:</strong> Group by crop name and calculate median values</li>
+            <li><strong>ML Prediction:</strong> Use TensorFlow.js neural network to predict yield and suitability (if model is trained)</li>
             <li><strong>Live Price Fetching:</strong> Query AGMARKNET API for current market prices</li>
             <li><strong>Cost Calculation:</strong> Compute input costs per hectare</li>
             <li><strong>Revenue Estimation:</strong> Calculate expected income based on yield and prices</li>
-            <li><strong>Score Computation:</strong> Apply weighted scoring algorithm</li>
+            <li><strong>Score Computation:</strong> Apply hybrid scoring algorithm (70% traditional + 30% ML)</li>
             <li><strong>Ranking & Sorting:</strong> Sort by composite score</li>
             <li><strong>Companion Crop Analysis:</strong> Identify intercropping opportunities</li>
             <li><strong>Result Generation:</strong> Return top 8-10 recommendations</li>
@@ -222,12 +230,15 @@
 
     <h2>8. FUTURE ENHANCEMENTS</h2>
     <ul>
-        <li>Integration of TensorFlow.js for predictive yield modeling</li>
+        <li><strike>Integration of TensorFlow.js for predictive yield modeling</strike> <strong>(✅ COMPLETED)</strong></li>
+        <li>Ensemble methods combining multiple ML models</li>
+        <li>Weather-based yield adjustment using forecast data</li>
         <li>Machine learning-based price forecasting</li>
         <li>Climate change impact analysis</li>
         <li>Pest and disease prediction algorithms</li>
         <li>Satellite imagery integration for soil health assessment</li>
         <li>IoT sensor data integration for real-time field monitoring</li>
+        <li>Transfer learning for regional model adaptation</li>
     </ul>
 
     <hr style="margin: 30px 0;">
