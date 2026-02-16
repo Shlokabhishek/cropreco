@@ -15,6 +15,7 @@
 	},
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.9.7",
+		"@supabase/supabase-js": "^2.95.3",
 		"@tensorflow/tfjs": "^4.22.0",
 		"danfojs": "^0.1.1",
 		"plotly.js": "^3.3.1",
@@ -41,5 +42,8 @@
 	"main": "index.js",
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"engines": {
+		"node": ">=18.x"
+	}
 }
