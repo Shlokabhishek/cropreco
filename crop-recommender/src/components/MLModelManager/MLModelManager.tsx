@@ -12,15 +12,16 @@ export const MLModelManager: React.FC = () => {
 
   const checkModelStatus = async () => {
     setModelStatus('loading');
-    const available = isModelAvailable();
     
-    if (!available) {
-      // Try to load existing model
-      const loaded = await loadExistingModel();
-      setModelStatus(loaded ? 'trained' : 'not-trained');
-    } else {
+    // First check if model is already in memory
+    if (isModelAvailable()) {
       setModelStatus('trained');
+      return;
     }
+    
+    // Try to load existing model from localStorage
+    const loaded = await loadExistingModel();
+    setModelStatus(loaded ? 'trained' : 'not-trained');
   };
 
   const handleTrainModel = async () => {
