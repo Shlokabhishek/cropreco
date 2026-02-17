@@ -24,6 +24,13 @@ This crop recommender project now includes a **Machine Learning (ML) model** pow
 - **Optimizer**: Adam with learning rate 0.001
 - **Epochs**: 100 (with early stopping capability)
 
+### Latest Local Training Run (Feb 17, 2026)
+- **Samples Used**: 19,377 (after cleaning and filtering)
+- **Epochs Run**: 50 (quick local run on CPU)
+- **Final Loss (MSE)**: 94.6693
+- **Final MAE**: 4.2616
+
+> Note: The in-app trainer runs 100 epochs by default. The above metrics are from a shorter local run for quick verification.
 ### 🎯 Enhanced Recommendations
 The ML model integrates seamlessly with existing rule-based algorithms:
 - **70%** traditional scoring (budget, profitability, ROI)
@@ -67,6 +74,7 @@ Dense Layer (64 units, ReLU) + Dropout (0.2)
     ↓
 Dense Layer (32 units, ReLU) + Dropout (0.2)
     ↓
+
 Dense Layer (16 units, ReLU)
     ↓
 Output Layer (1 unit, Linear)
@@ -99,6 +107,9 @@ All features are normalized using z-score standardization:
 ```
 normalized_value = (value - mean) / std_deviation
 ```
+
+**Stored Scaler**
+- Mean and standard deviation are saved alongside the model so inference uses consistent scaling.
 
 ### Storage
 
@@ -165,6 +176,10 @@ predictions.forEach((pred, crop) => {
 - **Time**: 1-2 minutes on modern hardware
 - **Data**: 19,691 records → ~15,000 training samples (after filtering)
 - **Browser**: Runs entirely in the browser, no server required
+
+### Additional Performance Metrics
+- **Latency**: <10ms per prediction
+- **Batch**: ~50ms for 100 crops
 
 ### Prediction
 - **Latency**: <10ms per prediction

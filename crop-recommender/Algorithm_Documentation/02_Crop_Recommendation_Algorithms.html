@@ -259,7 +259,7 @@ Output Layer: 1 neuron, Linear activation → Predicted Yield (tonnes/hectare)<b
             </tr>
             <tr>
                 <td>Epochs</td>
-                <td>100</td>
+                <td>100 (default in app)</td>
             </tr>
             <tr>
                 <td>Batch Size</td>
@@ -271,7 +271,27 @@ Output Layer: 1 neuron, Linear activation → Predicted Yield (tonnes/hectare)<b
             </tr>
             <tr>
                 <td>Training Data</td>
-                <td>~15,000 records (from 19,691 total after filtering)</td>
+                <td>19,377 samples after filtering (latest local run)</td>
+            </tr>
+        </table>
+
+        <h4>Latest Local Training Run (Feb 17, 2026)</h4>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Epochs Run</td>
+                <td>50 (quick CPU run)</td>
+            </tr>
+            <tr>
+                <td>Final Loss (MSE)</td>
+                <td>94.6693</td>
+            </tr>
+            <tr>
+                <td>Final MAE</td>
+                <td>4.2616</td>
             </tr>
         </table>
 
@@ -342,7 +362,7 @@ Output Layer: 1 neuron, Linear activation → Predicted Yield (tonnes/hectare)<b
             </tr>
             <tr>
                 <td>suitability</td>
-                <td>Normalized suitability score [0, 1]</td>
+                <td>Suitability score [0, 100] derived from predicted yield</td>
             </tr>
             <tr>
                 <td>confidence</td>

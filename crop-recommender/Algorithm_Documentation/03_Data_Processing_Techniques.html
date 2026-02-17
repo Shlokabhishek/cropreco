@@ -185,6 +185,21 @@ numericCols.forEach(col => {<br>
         </ul>
     </div>
 
+    <h3>2.3 Z-Score Normalization for ML Model</h3>
+    <p>
+        The TensorFlow.js model uses <strong>z-score standardization</strong> for its six numeric and encoded features. 
+        This normalization centers data around zero and scales it by standard deviation, which improves neural network convergence.
+    </p>
+
+    <div class="algorithm-box">
+        <h4>Z-Score Formula</h4>
+        <div class="formula">
+            normalized_value = (value - mean) / std_deviation
+        </div>
+        <p><strong>Stored Scaler:</strong> The mean and standard deviation are stored with the model to ensure consistent inference.</p>
+        <p><strong>Applied Features:</strong> Rainfall, Fertilizer, Pesticide, Acreage, Season (encoded), Soil Type (encoded).</p>
+    </div>
+
     <h2>3. DATA TRANSFORMATION TECHNIQUES</h2>
 
     <h3>3.1 Exploding Multi-Value Columns</h3>
