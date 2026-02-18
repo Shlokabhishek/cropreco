@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommender — Complete Algorithm Documentation</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; color: #1a1a2e; background: #f0f4f8; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        h1 { font-size: 2.2rem; color: #0d47a1; border-bottom: 4px solid #1565c0; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 1.6rem; color: #1565c0; margin: 2rem 0 0.8rem; border-left: 5px solid #42a5f5; padding-left: 12px; }
+        h3 { font-size: 1.2rem; color: #1976d2; margin: 1.2rem 0 0.5rem; }
+        p, li { font-size: 0.95rem; }
+        .section { background: white; border-radius: 10px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .highlight { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 1rem 0; }
+        code { background: #e8eaf6; padding: 2px 6px; border-radius: 3px; font-size: 0.9rem; font-family: 'Cascadia Code', 'Fira Code', monospace; }
+        pre { background: #263238; color: #eeffff; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; font-size: 0.85rem; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th { background: #1565c0; color: white; padding: 10px 14px; text-align: left; }
+        td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; }
+        tr:nth-child(even) { background: #f5f5f5; }
+        ul, ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+        li { margin-bottom: 0.3rem; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-blue { background: #e3f2fd; color: #1565c0; }
+        .badge-orange { background: #fff3e0; color: #e65100; }
+        .flow-step { display: flex; align-items: flex-start; gap: 12px; margin: 0.5rem 0; padding: 10px; background: #fafafa; border-radius: 6px; border: 1px solid #e0e0e0; }
+        .flow-step .num { min-width: 28px; height: 28px; border-radius: 50%; background: #1565c0; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; }
+        .architecture-box { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0; }
+        .layer { padding: 10px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-align: center; }
+        .layer-input { background: #bbdefb; color: #0d47a1; }
+        .layer-hidden { background: #c8e6c9; color: #1b5e20; }
+        .layer-dropout { background: #fff3e0; color: #e65100; }
+        .layer-output { background: #f3e5f5; color: #4a148c; }
+        .arrow { display: flex; align-items: center; color: #757575; font-size: 1.2rem; }
+        .toc { background: #e8eaf6; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+        .toc a { color: #1565c0; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .toc ol { padding-left: 1.5rem; }
+        .toc li { margin-bottom: 0.3rem; }
+        .formula { background: #fff8e1; padding: 12px 16px; border-radius: 6px; font-family: 'Cascadia Code', monospace; font-size: 0.9rem; margin: 0.5rem 0; border: 1px solid #ffecb3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 Crop Recommender System — Complete Algorithm Documentation</h1>
+        <p style="color:#546e7a; margin-bottom: 1rem;">
+            Version 2.0 | Last Updated: February 2026 | Neural Network + Traditional Scoring Hybrid System
+        </p>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3>📑 Table of Contents</h3>
+            <ol>
+                <li><a href="#overview">System Overview</a></li>
+                <li><a href="#preprocessing">Data Preprocessing Steps</a></li>
+                <li><a href="#features">Feature Selection Method</a></li>
+                <li><a href="#training">Model Training Process</a></li>
+                <li><a href="#evaluation">Model Evaluation Metrics</a></li>
+                <li><a href="#prediction">Prediction Logic</a></li>
+                <li><a href="#recommendation">Recommendation Generation Logic</a></li>
+                <li><a href="#output">Final Output Generation Process</a></li>
+                <li><a href="#scoring">Scoring & Farming Types</a></li>
+                <li><a href="#avoidance">Crop Avoidance Algorithm</a></li>
+                <li><a href="#api">API Integration</a></li>
+                <li><a href="#files">File Reference Map</a></li>
+            </ol>
+        </div>
+
+        <!-- 1. System Overview -->
+        <div class="section" id="overview">
+            <h2>1. System Overview</h2>
+            <p>The Crop Recommender is a <strong>hybrid recommendation engine</strong> that combines:</p>
+            <ul>
+                <li><strong>Traditional statistical scoring</strong> — based on historical yield data, market prices, cost analysis</li>
+                <li><strong>Deep Neural Network (TensorFlow.js)</strong> — predicts crop yield and suitability from agronomic features</li>
+            </ul>
+            <div class="highlight">
+                <strong>Blending Formula:</strong> Final Score = <code>0.70 × Traditional Score + 0.30 × ML Suitability Score</code>
+            </div>
+
+            <h3>ML Model Specification</h3>
+            <table>
+                <tr><th>Property</th><th>Value</th></tr>
+                <tr><td>Model Name</td><td>CropYield Neural Network</td></tr>
+                <tr><td>Framework</td><td>TensorFlow.js (browser-based)</td></tr>
+                <tr><td>Type</td><td>Sequential Deep Neural Network</td></tr>
+                <tr><td>Input Features</td><td>6 (rainfall, fertilizer, pesticide, acreage, season, soil type)</td></tr>
+                <tr><td>Output</td><td>1 continuous value (predicted yield in tonnes/hectare)</td></tr>
+                <tr><td>Training Data</td><td>19,000+ Indian crop records (2000-2023)</td></tr>
+                <tr><td>Persistence</td><td>Browser localStorage</td></tr>
+            </table>
+        </div>
+
+        <!-- 2. Data Preprocessing -->
+        <div class="section" id="preprocessing">
+            <h2>2. Data Preprocessing Steps</h2>
+
+            <h3>2.1 CSV Data Loading</h3>
+            <p>The system loads <code>crop_dataset.csv</code> (tab-separated, 19,691 rows) with columns:</p>
+            <table>
+                <tr><th>Column</th><th>Description</th><th>Example</th></tr>
+                <tr><td>Crop</td><td>Crop name</td><td>Rice</td></tr>
+                <tr><td>Year</td><td>Production year (unused in training)</td><td>2015</td></tr>
+                <tr><td>Season</td><td>Growing season</td><td>Kharif</td></tr>
+                <tr><td>State</td><td>Indian state</td><td>Punjab</td></tr>
+                <tr><td>Area</td><td>Cultivated area (hectares)</td><td>3500</td></tr>
+                <tr><td>Production</td><td>Total production (tonnes)</td><td>12500</td></tr>
+                <tr><td>Annual_Rainfall</td><td>Average rainfall (mm)</td><td>1200</td></tr>
+                <tr><td>Fertilizer</td><td>Total fertilizer used (kg)</td><td>55000</td></tr>
+                <tr><td>Pesticide</td><td>Total pesticide used (kg)</td><td>3200</td></tr>
+                <tr><td>Yield</td><td>Yield value</td><td>3.57</td></tr>
+            </table>
+
+            <h3>2.2 Data Cleaning</h3>
+            <ol>
+                <li><strong>Parse format:</strong> Try tab-separated first, fallback to comma-separated</li>
+                <li><strong>Calculate yield per hectare:</strong> <code>yieldPerHectare = yield > 0 ? yield : production / max(area, 1)</code></li>
+                <li><strong>Normalize per-hectare values:</strong> Convert fertilizer and pesticide to per-hectare: <code>fertilizer / max(area, 1)</code></li>
+                <li><strong>Filter invalid records:</strong> Remove rows where <code>yieldPerHectare ≤ 0</code> or <code>yieldPerHectare > 100</code></li>
+                <li><strong>Handle missing values:</strong> Default rainfall = 1000mm, fertilizer = 50 kg/ha, pesticide = 10 kg/ha, acreage = 1</li>
+            </ol>
+
+            <h3>2.3 Feature Encoding</h3>
+            <p><strong>Categorical → Numerical mapping:</strong></p>
+            <table>
+                <tr><th>Season</th><th>Code</th><th>Soil Type</th><th>Code</th></tr>
+                <tr><td>Kharif</td><td>0</td><td>Loamy</td><td>0</td></tr>
+                <tr><td>Rabi</td><td>1</td><td>Sandy</td><td>1</td></tr>
+                <tr><td>Zaid</td><td>2</td><td>Clay</td><td>2</td></tr>
+                <tr><td>Summer</td><td>3</td><td>Red</td><td>3</td></tr>
+                <tr><td>Winter</td><td>4</td><td>Black</td><td>4</td></tr>
+                <tr><td>Autumn</td><td>5</td><td>Alluvial</td><td>5</td></tr>
+                <tr><td>Whole Year</td><td>6</td><td>Unknown</td><td>6</td></tr>
+                <tr><td>Unknown</td><td>7</td><td></td><td></td></tr>
+            </table>
+
+            <h3>2.4 State-to-Soil Mapping</h3>
+            <p>Since the crop dataset doesn't include soil type, a lookup table maps Indian states to predominant soil types:</p>
+            <pre>Punjab, Haryana, UP, Bihar, WB, Kerala, Assam → Alluvial
+Maharashtra, Gujarat, MP → Black
+Karnataka, TN, AP, Telangana, Odisha, Chhattisgarh, Jharkhand → Red
+Rajasthan → Sandy
+Others → Unknown</pre>
+
+            <h3>2.5 Z-Score Normalization</h3>
+            <p>All 6 input features are normalized using z-score normalization during training:</p>
+            <div class="formula">
+                normalized_value = (value - μ) / σ
+                <br><br>
+                where μ = feature mean, σ = feature standard deviation
+                <br>σ is set to 1 if computed as 0 (to avoid division by zero)
+            </div>
+            <p>The computed <code>mean[]</code> and <code>std[]</code> arrays are stored as the <strong>scaler</strong> and persisted to localStorage alongside the model for consistent normalization during inference.</p>
+        </div>
+
+        <!-- 3. Feature Selection -->
+        <div class="section" id="features">
+            <h2>3. Feature Selection Method</h2>
+            <p>Six features were selected based on agronomic domain knowledge and availability in the dataset:</p>
+            <table>
+                <tr><th>Feature</th><th>Type</th><th>Rationale</th><th>Range</th></tr>
+                <tr><td>Rainfall</td><td>Continuous</td><td>Primary water source affecting crop growth</td><td>200-3000 mm</td></tr>
+                <tr><td>Fertilizer</td><td>Continuous</td><td>Soil nutrient supplementation per hectare</td><td>0-500 kg/ha</td></tr>
+                <tr><td>Pesticide</td><td>Continuous</td><td>Crop protection intensity per hectare</td><td>0-100 kg/ha</td></tr>
+                <tr><td>Acreage</td><td>Continuous</td><td>Scale factor for yield prediction</td><td>0.5-100 ha</td></tr>
+                <tr><td>Season</td><td>Categorical (encoded)</td><td>Growing season determines crop viability</td><td>0-7</td></tr>
+                <tr><td>Soil Type</td><td>Categorical (encoded)</td><td>Soil characteristics affect crop suitability</td><td>0-6</td></tr>
+            </table>
+            <div class="highlight">
+                <strong>Note:</strong> Year was deliberately excluded as a feature to prevent temporal bias. The model focuses on agronomic conditions rather than trends.
+            </div>
+        </div>
+
+        <!-- 4. Model Training Process -->
+        <div class="section" id="training">
+            <h2>4. Model Training Process</h2>
+
+            <h3>4.1 Neural Network Architecture</h3>
+            <div class="architecture-box">
+                <div class="layer layer-input">Input (6)</div>
+                <div class="arrow">→</div>
+                <div class="layer layer-hidden">Dense(64, ReLU, He)</div>
+                <div class="arrow">→</div>
+                <div class="layer layer-dropout">Dropout(0.2)</div>
+                <div class="arrow">→</div>
+                <div class="layer layer-hidden">Dense(32, ReLU, He)</div>
+                <div class="arrow">→</div>
+                <div class="layer layer-dropout">Dropout(0.2)</div>
+                <div class="arrow">→</div>
+                <div class="layer layer-hidden">Dense(16, ReLU)</div>
+                <div class="arrow">→</div>
+                <div class="layer layer-output">Dense(1, Linear)</div>
+            </div>
+
+            <table>
+                <tr><th>Layer</th><th>Units</th><th>Activation</th><th>Purpose</th></tr>
+                <tr><td>Input → Dense 1</td><td>64</td><td>ReLU</td><td>Learn non-linear feature combinations</td></tr>
+                <tr><td>Dropout 1</td><td>—</td><td>—</td><td>20% dropout for regularization</td></tr>
+                <tr><td>Dense 2</td><td>32</td><td>ReLU</td><td>Compress to medium representations</td></tr>
+                <tr><td>Dropout 2</td><td>—</td><td>—</td><td>20% dropout for regularization</td></tr>
+                <tr><td>Dense 3</td><td>16</td><td>ReLU</td><td>Final feature extraction</td></tr>
+                <tr><td>Output</td><td>1</td><td>Linear</td><td>Predict continuous yield value</td></tr>
+            </table>
+
+            <h3>4.2 Training Hyperparameters</h3>
+            <table>
+                <tr><th>Parameter</th><th>Value</th><th>Justification</th></tr>
+                <tr><td>Optimizer</td><td>Adam (lr=0.001)</td><td>Adaptive learning rate, fast convergence</td></tr>
+                <tr><td>Loss Function</td><td>Mean Squared Error</td><td>Standard for regression tasks</td></tr>
+                <tr><td>Metric</td><td>Mean Absolute Error</td><td>Interpretable yield error in tonnes/ha</td></tr>
+                <tr><td>Epochs</td><td>100</td><td>Sufficient for convergence with Adam</td></tr>
+                <tr><td>Batch Size</td><td>32</td><td>Balance between stability and speed</td></tr>
+                <tr><td>Validation Split</td><td>20%</td><td>Monitor overfitting during training</td></tr>
+                <tr><td>Weight Init</td><td>He Normal</td><td>Best practice for ReLU activations</td></tr>
+            </table>
+
+            <h3>4.3 Training Pipeline (5 Stages)</h3>
+            <div class="flow-step"><div class="num">1</div><div><strong>Loading (10%)</strong> — Fetch CSV from <code>/data/crop_dataset.csv</code>, parse with <code>parseCSVData()</code></div></div>
+            <div class="flow-step"><div class="num">2</div><div><strong>Preprocessing (30%)</strong> — Filter invalid yields, map states to soil types, encode features, normalize</div></div>
+            <div class="flow-step"><div class="num">3</div><div><strong>Training (50%→85%)</strong> — Build neural network, train with callbacks reporting per-epoch progress</div></div>
+            <div class="flow-step"><div class="num">4</div><div><strong>Saving (90%)</strong> — Persist model + scaler to browser localStorage</div></div>
+            <div class="flow-step"><div class="num">5</div><div><strong>Complete (100%)</strong> — Report final loss and MAE metrics</div></div>
+        </div>
+
+        <!-- 5. Evaluation Metrics -->
+        <div class="section" id="evaluation">
+            <h2>5. Model Evaluation Metrics</h2>
+            <table>
+                <tr><th>Metric</th><th>Formula</th><th>Interpretation</th></tr>
+                <tr>
+                    <td>MSE (Loss)</td>
+                    <td><code>Σ(predicted - actual)² / n</code></td>
+                    <td>Lower is better. Penalizes large errors heavily.</td>
+                </tr>
+                <tr>
+                    <td>MAE</td>
+                    <td><code>Σ|predicted - actual| / n</code></td>
+                    <td>Average absolute error in tonnes/hectare. Directly interpretable.</td>
+                </tr>
+                <tr>
+                    <td>Validation Loss</td>
+                    <td>MSE on held-out 20% data</td>
+                    <td>Measures generalization. If val_loss >> train_loss, model is overfitting.</td>
+                </tr>
+            </table>
+            <div class="highlight">
+                <strong>Regularization used:</strong> Two Dropout layers (rate=0.2) prevent the model from memorizing training data, ensuring better generalization to unseen farmer profiles.
+            </div>
+            <p>After training, the final MSE and MAE are displayed to the user. Typical expected values:</p>
+            <ul>
+                <li>Loss (MSE): 0.5–3.0 (depends on yield variance in dataset)</li>
+                <li>MAE: 0.5–1.5 tonnes/hectare (acceptable prediction margin)</li>
+            </ul>
+        </div>
+
+        <!-- 6. Prediction Logic -->
+        <div class="section" id="prediction">
+            <h2>6. Prediction Logic</h2>
+            <h3>6.1 Single Prediction Flow</h3>
+            <div class="flow-step"><div class="num">1</div><div><strong>Encode Input</strong> — Convert season string → integer code, soil type → integer code. Numeric features passed as-is.</div></div>
+            <div class="flow-step"><div class="num">2</div><div><strong>Normalize</strong> — Apply stored z-score parameters: <code>(value - mean[i]) / std[i]</code> for each of 6 features.</div></div>
+            <div class="flow-step"><div class="num">3</div><div><strong>Inference</strong> — Create tensor from normalized features, run <code>model.predict()</code></div></div>
+            <div class="flow-step"><div class="num">4</div><div><strong>Yield</strong> — Output clamped to ≥ 0: <code>max(0, rawPrediction)</code></div></div>
+            <div class="flow-step"><div class="num">5</div><div><strong>Suitability Score</strong> — <code>min(100, max(0, yield × 10))</code> mapped to 0-100 scale</div></div>
+            <div class="flow-step"><div class="num">6</div><div><strong>Confidence</strong> — <code>0.85</code> if yield ∈ (0, 15) (normal range), else <code>0.50</code></div></div>
+            <div class="flow-step"><div class="num">7</div><div><strong>Cleanup</strong> — Dispose TensorFlow tensors to prevent memory leaks</div></div>
+
+            <h3>6.2 Batch Prediction</h3>
+            <p>For efficiency, the system supports batch prediction for all candidate crops simultaneously. All inputs are stacked into a single 2D tensor, passed through the model in one forward pass, and results are mapped back to individual crops.</p>
+        </div>
+
+        <!-- 7. Recommendation Generation -->
+        <div class="section" id="recommendation">
+            <h2>7. Recommendation Generation Logic</h2>
+
+            <h3>7.1 Data Filtering (4-Level Fallback)</h3>
+            <ol>
+                <li><strong>Level 1:</strong> Filter by user's state AND season → most relevant data</li>
+                <li><strong>Level 2:</strong> Filter by state only (ignore season) → if Level 1 yields 0 results</li>
+                <li><strong>Level 3:</strong> Partial state name match → handles formatting differences</li>
+                <li><strong>Level 4:</strong> Season-only or nationwide data → last resort fallback</li>
+            </ol>
+
+            <h3>7.2 Per-Crop Statistics</h3>
+            <ul>
+                <li><strong>Yield:</strong> Median yield per hectare from historical records (more stable than mean)</li>
+                <li><strong>Fertilizer/Pesticide:</strong> Average per-hectare usage for cost estimation</li>
+                <li><strong>Season:</strong> Primary growing season from records</li>
+            </ul>
+
+            <h3>7.3 Cost Calculation</h3>
+            <div class="formula">
+                Total Cost = (Fertilizer Cost + Pesticide Cost + Labor Cost + Seed Cost) × Acreage
+                <br><br>
+                Fertilizer Cost = max(avgFertilizer × 0.05, ₹2,000/ha)
+                <br>Pesticide Cost = max(avgPesticide × 0.10, ₹1,000/ha)
+                <br>Labor Cost = ₹15,000/ha (fixed)
+                <br>Seed Cost = ₹5,000/ha (fixed)
+            </div>
+
+            <h3>7.4 Revenue Calculation</h3>
+            <div class="formula">
+                Revenue = Yield (tonnes/ha) × 10 (quintals/tonne) × Market Price (₹/quintal) × Acreage
+            </div>
+            <p>Market prices sourced from: (1) Live AGMARKNET API data, (2) Cached prices (30-min TTL), (3) MSP 2024-25 fallback with ±10% variation.</p>
+
+            <h3>7.5 Traditional Scoring Formula</h3>
+            <div class="formula">
+                Traditional Score = Budget Score × 0.30 + Profit Score × 0.30 + Yield Score × 0.20 + ROI Score × 0.20
+            </div>
+            <table>
+                <tr><th>Component</th><th>Calculation</th><th>Weight</th></tr>
+                <tr><td>Budget Score</td><td><code>cost ≤ budget ? 1.0 : budget / cost</code></td><td>30%</td></tr>
+                <tr><td>Profit Score</td><td><code>profit > 0 ? min(profit / 200000, 1) : 0</code></td><td>30%</td></tr>
+                <tr><td>Yield Score</td><td><code>min(avgYield / 10, 1)</code></td><td>20%</td></tr>
+                <tr><td>ROI Score</td><td><code>cost > 0 ? min(profit / cost, 1) : 0</code></td><td>20%</td></tr>
+            </table>
+
+            <h3>7.6 ML Score Blending</h3>
+            <div class="formula">
+                If ML model is trained:
+                <br>Final Score = Traditional Score × 0.70 + (ML Suitability / 100) × 0.30
+                <br><br>
+                If ML model is NOT trained:
+                <br>Final Score = Traditional Score × 1.00
+            </div>
+
+            <h3>7.7 Budget Filtering (Progressive Relaxation)</h3>
+            <ol>
+                <li>Return crops with cost ≤ 1.5× budget (sorted by score)</li>
+                <li>If &lt; 5 results: relax to 3× budget</li>
+                <li>If &lt; 3 results: ignore budget, prioritize profitable crops</li>
+            </ol>
+
+            <h3>7.8 Multi-Crop / Intercropping Mode</h3>
+            <p>When enabled, the system:</p>
+            <ul>
+                <li>Checks companion crop compatibility tables (14 crop families)</li>
+                <li>Boosts companion crop scores by 10%</li>
+                <li>Labels compatible crops as "Intercropping Compatible"</li>
+                <li>Returns up to 8 diverse crops (vs. standard 8)</li>
+            </ul>
+        </div>
+
+        <!-- 8. Final Output Generation -->
+        <div class="section" id="output">
+            <h2>8. Final Output Generation Process</h2>
+            <p>The complete pipeline from user input to displayed recommendations:</p>
+
+            <div class="flow-step"><div class="num">1</div><div><strong>User Profile Input</strong> — State, soil type, acreage, budget, season, multi-crop preference</div></div>
+            <div class="flow-step"><div class="num">2</div><div><strong>CSV Data Load</strong> — Fetch and parse 19,691 crop records from <code>/data/crop_dataset.csv</code></div></div>
+            <div class="flow-step"><div class="num">3</div><div><strong>Live Price Fetch</strong> — Query AGMARKNET API for real-time market prices (5s timeout, 30-min cache)</div></div>
+            <div class="flow-step"><div class="num">4</div><div><strong>State/Season Filter</strong> — Filter dataset to user's region with 4-level fallback</div></div>
+            <div class="flow-step"><div class="num">5</div><div><strong>Crop Aggregation</strong> — Group by crop name, compute median yield, average costs</div></div>
+            <div class="flow-step"><div class="num">6</div><div><strong>Financial Analysis</strong> — Calculate cost, revenue, profit per crop</div></div>
+            <div class="flow-step"><div class="num">7</div><div><strong>Traditional Scoring</strong> — Compute weighted score (budget + profit + yield + ROI)</div></div>
+            <div class="flow-step"><div class="num">8</div><div><strong>ML Prediction</strong> — If model trained: predict yield for each crop, compute suitability score</div></div>
+            <div class="flow-step"><div class="num">9</div><div><strong>Score Blending</strong> — Merge traditional (70%) + ML (30%) scores</div></div>
+            <div class="flow-step"><div class="num">10</div><div><strong>Budget Filtering</strong> — Progressive relaxation to ensure sufficient results</div></div>
+            <div class="flow-step"><div class="num">11</div><div><strong>Ranking & Selection</strong> — Sort by final score, return top 8 crops</div></div>
+            <div class="flow-step"><div class="num">12</div><div><strong>Crop Avoidance</strong> — Identify risky crops based on soil/season/cost/weather factors</div></div>
+            <div class="flow-step"><div class="num">13</div><div><strong>Farming Types</strong> — Score 5 farming methods based on profile characteristics</div></div>
+            <div class="flow-step"><div class="num">14</div><div><strong>UI Rendering</strong> — Display crop cards with score, financials, and price badges</div></div>
+        </div>
+
+        <!-- 9. Scoring & Farming Types -->
+        <div class="section" id="scoring">
+            <h2>9. Scoring & Farming Types</h2>
+            <p>Five farming types are scored based on the user's profile:</p>
+            <table>
+                <tr><th>Farming Type</th><th>Base Score</th><th>Boosters</th></tr>
+                <tr><td>Organic</td><td>0.50</td><td>Loamy/Clay soil (+0.15), Small farm ≤10ha (+0.10), Budget ≥₹30K (+0.10)</td></tr>
+                <tr><td>Intensive</td><td>0.40</td><td>Budget ≥₹1L (+0.20), Acreage ≥5ha (+0.15), Loamy/Alluvial (+0.10)</td></tr>
+                <tr><td>Mixed</td><td>0.55</td><td>Acreage 3-15ha (+0.15), Budget ≥₹50K (+0.10)</td></tr>
+                <tr><td>Precision</td><td>0.30</td><td>Budget ≥₹2L (+0.25), Acreage ≥10ha (+0.20)</td></tr>
+                <tr><td>Sustainable</td><td>0.60</td><td>Loamy soil (+0.10), Acreage ≤20ha (+0.10), Budget ≥₹40K (+0.10)</td></tr>
+            </table>
+        </div>
+
+        <!-- 10. Crop Avoidance -->
+        <div class="section" id="avoidance">
+            <h2>10. Crop Avoidance Algorithm</h2>
+            <p>Crops are flagged for avoidance when they meet <strong>≥2 risk factors</strong> or have <strong>negative profit margin</strong>:</p>
+            <table>
+                <tr><th>Risk Factor</th><th>Detection Method</th><th>Estimated Loss Impact</th></tr>
+                <tr><td>Unsuitable Soil</td><td>Lookup soil-crop incompatibility table</td><td>+₹15,000/ha</td></tr>
+                <tr><td>Wrong Season</td><td>Season-crop mismatch lookup</td><td>+₹20,000/ha</td></tr>
+                <tr><td>Low Market Price</td><td>Price-volatile crop list</td><td>+₹10,000/ha</td></tr>
+                <tr><td>High Input Cost</td><td>Cost > 80% of budget</td><td>Cost - Budget</td></tr>
+                <tr><td>Weather Risk</td><td>Weather-sensitive crop list</td><td>+₹8,000/ha</td></tr>
+                <tr><td>Low Yield</td><td>avgYield < 1.5 t/ha</td><td>+₹12,000/ha</td></tr>
+                <tr><td>Negative Profit</td><td>Revenue < Cost</td><td>Cost - Revenue</td></tr>
+            </table>
+        </div>
+
+        <!-- 11. API Integration -->
+        <div class="section" id="api">
+            <h2>11. API Integration</h2>
+            <h3>Live Market Price API</h3>
+            <table>
+                <tr><th>Property</th><th>Value</th></tr>
+                <tr><td>Source</td><td>data.gov.in — AGMARKNET (Agriculture Market Information System)</td></tr>
+                <tr><td>Endpoint</td><td><code>https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070</code></td></tr>
+                <tr><td>Timeout</td><td>5 seconds</td></tr>
+                <tr><td>Cache</td><td>30 minutes in-memory</td></tr>
+                <tr><td>Fallback</td><td>MSP 2024-25 prices with ±10% random variation</td></tr>
+                <tr><td>Commodity Mapping</td><td>36 commodity name mappings (API → dataset names)</td></tr>
+            </table>
+        </div>
+
+        <!-- 12. File Reference Map -->
+        <div class="section" id="files">
+            <h2>12. File Reference Map</h2>
+            <table>
+                <tr><th>File</th><th>Purpose</th></tr>
+                <tr><td><code>src/services/mlModel.ts</code></td><td>Neural network model (TensorFlow.js): build, train, predict, save/load</td></tr>
+                <tr><td><code>src/services/modelTraining.ts</code></td><td>Training orchestration: data prep, 5-stage pipeline, batch prediction</td></tr>
+                <tr><td><code>src/services/recommender.ts</code></td><td>Core engine: CSV parsing, scoring, ML blending, crop avoidance, farming types</td></tr>
+                <tr><td><code>src/services/constants.ts</code></td><td>Market prices (MSP), states, soil types, scoring weights</td></tr>
+                <tr><td><code>src/hooks/useCropRecommendation.ts</code></td><td>React hook orchestrating the full recommendation pipeline</td></tr>
+                <tr><td><code>src/components/MLModelManager/</code></td><td>ML model training UI, status, model description panel</td></tr>
+                <tr><td><code>src/components/CropRecommendations/</code></td><td>Recommendation display: crop cards, farming types, financials</td></tr>
+                <tr><td><code>public/data/crop_dataset.csv</code></td><td>Training dataset: 19,691 Indian crop production records</td></tr>
+                <tr><td><code>public/data/soil_dataset.csv</code></td><td>Soil dataset: 8,002 records with NPK, temperature, humidity</td></tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

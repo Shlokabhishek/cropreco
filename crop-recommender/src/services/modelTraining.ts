@@ -149,17 +149,16 @@ export async function trainCropModel(
 }
 
 /**
- * Load existing model if available
+ * Load existing model — tries pre-trained static files first, then localStorage fallback
  */
 export async function loadExistingModel(): Promise<boolean> {
   try {
     const mlModel = getMLModel();
-    await mlModel.loadModel('crop-ml-model');
-    console.log('✅ ML model loaded from storage');
+    await mlModel.loadPretrainedModel();
+    console.log('✅ ML model loaded (pre-trained)');
     return true;
   } catch (error) {
-    // This is expected on first run - model needs to be trained
-    console.log('ℹ️ No trained model found - please train the model');
+    console.log('ℹ️ No trained model found — run "npm run pretrain" to pre-train the model');
     return false;
   }
 }

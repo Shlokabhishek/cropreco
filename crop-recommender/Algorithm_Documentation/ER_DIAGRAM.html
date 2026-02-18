@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommender — ER Diagram</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a1a2e; padding: 2rem; }
+        h1 { text-align: center; color: #0d47a1; margin-bottom: 0.5rem; }
+        .subtitle { text-align: center; color: #546e7a; margin-bottom: 2rem; }
+        .diagram-container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .legend { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin: 1.5rem 0; padding: 1rem; background: #f5f5f5; border-radius: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .legend-symbol { width: 40px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+        .sym-rect { border: 2px solid #1565c0; background: #e3f2fd; border-radius: 3px; }
+        .sym-oval { border: 2px solid #2e7d32; background: #e8f5e9; border-radius: 14px; }
+        .sym-diamond { width: 32px; height: 32px; border: 2px solid #e65100; background: #fff3e0; transform: rotate(45deg); }
+        .sym-diamond span { transform: rotate(-45deg); font-size: 0.6rem; }
+        .sym-underline { border-bottom: 2px solid #333; padding-bottom: 2px; font-weight: bold; }
+
+        /* ER Diagram SVG styles */
+        svg { width: 100%; height: auto; }
+        .entity { fill: #e3f2fd; stroke: #1565c0; stroke-width: 2; }
+        .entity-label { font-weight: bold; font-size: 14px; fill: #0d47a1; text-anchor: middle; dominant-baseline: middle; }
+        .attr-ellipse { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 1.5; }
+        .attr-label { font-size: 11px; fill: #1b5e20; text-anchor: middle; dominant-baseline: middle; }
+        .pk-label { font-size: 11px; fill: #1b5e20; text-anchor: middle; dominant-baseline: middle; text-decoration: underline; font-weight: bold; }
+        .rel-diamond { fill: #fff3e0; stroke: #e65100; stroke-width: 2; }
+        .rel-label { font-size: 12px; fill: #bf360c; text-anchor: middle; dominant-baseline: middle; font-weight: 600; }
+        .conn-line { stroke: #546e7a; stroke-width: 1.5; fill: none; }
+        .cardinality { font-size: 11px; fill: #d32f2f; font-weight: bold; }
+
+        .desc { max-width: 1000px; margin: 2rem auto 0; }
+        .desc h2 { color: #1565c0; margin: 1.5rem 0 0.8rem; border-left: 4px solid #1565c0; padding-left: 12px; }
+        .desc table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1rem; }
+        .desc th { background: #1565c0; color: white; padding: 8px 12px; text-align: left; }
+        .desc td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
+        .desc tr:nth-child(even) { background: #f5f5f5; }
+        .desc code { background: #e8eaf6; padding: 2px 5px; border-radius: 3px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <h1>🗃️ Entity-Relationship Diagram</h1>
+    <p class="subtitle">Crop Recommender System — Logical Data Model</p>
+
+    <div class="diagram-container">
+        <!-- ER Symbol Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-symbol sym-rect"></div>
+                <span>Rectangle → Entity</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-symbol sym-oval"></div>
+                <span>Oval → Attribute</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-symbol" style="width:auto;"><div class="sym-diamond"><span></span></div></div>
+                <span style="margin-left:8px;">Diamond → Relationship</span>
+            </div>
+            <div class="legend-item">
+                <span class="sym-underline">Attribute</span>
+                <span>→ Primary Key</span>
+            </div>
+            <div class="legend-item">
+                <span style="color:#d32f2f; font-weight:bold;">1 — M</span>
+                <span>→ Cardinality</span>
+            </div>
+        </div>
+
+        <!-- SVG ER Diagram -->
+        <svg viewBox="0 0 1100 820" xmlns="http://www.w3.org/2000/svg">
+            <!-- ========== USER ENTITY ========== -->
+            <rect class="entity" x="60" y="40" width="160" height="50" rx="4"/>
+            <text class="entity-label" x="140" y="65">USER</text>
+            <!-- User attributes -->
+            <ellipse class="attr-ellipse" cx="40" cy="150" rx="35" ry="18"/>
+            <text class="pk-label" x="40" y="150">user_id</text>
+            <line class="conn-line" x1="75" y1="150" x2="100" y2="90"/>
+
+            <ellipse class="attr-ellipse" cx="140" cy="150" rx="30" ry="18"/>
+            <text class="attr-label" x="140" y="150">email</text>
+            <line class="conn-line" x1="140" y1="132" x2="140" y2="90"/>
+
+            <ellipse class="attr-ellipse" cx="240" cy="150" rx="30" ry="18"/>
+            <text class="attr-label" x="240" y="150">name</text>
+            <line class="conn-line" x1="220" y1="143" x2="200" y2="90"/>
+
+            <!-- ========== FARMER_PROFILE ENTITY ========== -->
+            <rect class="entity" x="400" y="40" width="200" height="50" rx="4"/>
+            <text class="entity-label" x="500" y="65">FARMER_PROFILE</text>
+            <!-- Profile attributes -->
+            <ellipse class="attr-ellipse" cx="370" cy="150" rx="40" ry="18"/>
+            <text class="pk-label" x="370" y="150">profile_id</text>
+            <line class="conn-line" x1="390" y1="135" x2="430" y2="90"/>
+
+            <ellipse class="attr-ellipse" cx="470" cy="150" rx="28" ry="18"/>
+            <text class="attr-label" x="470" y="150">state</text>
+            <line class="conn-line" x1="470" y1="132" x2="480" y2="90"/>
+
+            <ellipse class="attr-ellipse" cx="545" cy="150" rx="35" ry="18"/>
+            <text class="attr-label" x="545" y="150">soil_type</text>
+            <line class="conn-line" x1="535" y1="135" x2="520" y2="90"/>
+
+            <ellipse class="attr-ellipse" cx="635" cy="150" rx="35" ry="18"/>
+            <text class="attr-label" x="635" y="150">acreage</text>
+            <line class="conn-line" x1="620" y1="138" x2="580" y2="90"/>
+
+            <ellipse class="attr-ellipse" cx="635" cy="30" rx="32" ry="18"/>
+            <text class="attr-label" x="635" y="30">budget</text>
+            <line class="conn-line" x1="610" y1="38" x2="580" y2="50"/>
+
+            <ellipse class="attr-ellipse" cx="400" cy="8" rx="32" ry="18"/>
+            <text class="attr-label" x="400" y="8">season</text>
+            <line class="conn-line" x1="420" y1="22" x2="450" y2="40"/>
+
+            <!-- User HAS Profile (1:1) -->
+            <polygon class="rel-diamond" points="310,65 350,40 390,65 350,90"/>
+            <text class="rel-label" x="350" y="66">HAS</text>
+            <line class="conn-line" x1="220" y1="65" x2="310" y2="65"/>
+            <line class="conn-line" x1="390" y1="65" x2="400" y2="65"/>
+            <text class="cardinality" x="240" y="58">1</text>
+            <text class="cardinality" x="395" y="58">1</text>
+
+            <!-- ========== DATASET ENTITY ========== -->
+            <rect class="entity" x="60" y="280" width="160" height="50" rx="4"/>
+            <text class="entity-label" x="140" y="305">DATASET</text>
+            <!-- Dataset attributes -->
+            <ellipse class="attr-ellipse" cx="10" cy="250" rx="40" ry="18"/>
+            <text class="pk-label" x="10" y="250">dataset_id</text>
+            <line class="conn-line" x1="45" y1="260" x2="80" y2="280"/>
+
+            <ellipse class="attr-ellipse" cx="10" cy="340" rx="40" ry="18"/>
+            <text class="attr-label" x="10" y="340">crop_name</text>
+            <line class="conn-line" x1="45" y1="335" x2="80" y2="320"/>
+
+            <ellipse class="attr-ellipse" cx="95" cy="380" rx="28" ry="18"/>
+            <text class="attr-label" x="95" y="380">yield</text>
+            <line class="conn-line" x1="105" y1="362" x2="120" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="175" cy="380" rx="32" ry="18"/>
+            <text class="attr-label" x="175" y="380">rainfall</text>
+            <line class="conn-line" x1="170" y1="362" x2="155" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="265" cy="340" rx="38" ry="18"/>
+            <text class="attr-label" x="265" y="340">fertilizer</text>
+            <line class="conn-line" x1="240" y1="333" x2="210" y2="320"/>
+
+            <ellipse class="attr-ellipse" cx="265" cy="280" rx="38" ry="18"/>
+            <text class="attr-label" x="265" y="280">pesticide</text>
+            <line class="conn-line" x1="235" y1="285" x2="220" y2="290"/>
+
+            <!-- ========== ML_MODEL ENTITY ========== -->
+            <rect class="entity" x="420" y="280" width="160" height="50" rx="4"/>
+            <text class="entity-label" x="500" y="305">ML_MODEL</text>
+
+            <ellipse class="attr-ellipse" cx="400" cy="380" rx="40" ry="18"/>
+            <text class="pk-label" x="400" y="380">model_id</text>
+            <line class="conn-line" x1="420" y1="365" x2="450" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="500" cy="380" rx="42" ry="18"/>
+            <text class="attr-label" x="500" y="380">model_type</text>
+            <line class="conn-line" x1="500" y1="362" x2="500" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="610" cy="380" rx="48" ry="18"/>
+            <text class="attr-label" x="610" y="380">architecture</text>
+            <line class="conn-line" x1="580" y1="368" x2="560" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="395" cy="240" rx="33" ry="18"/>
+            <text class="attr-label" x="395" y="240">loss_mse</text>
+            <line class="conn-line" x1="418" y1="252" x2="450" y2="280"/>
+
+            <ellipse class="attr-ellipse" cx="510" cy="240" rx="35" ry="18"/>
+            <text class="attr-label" x="510" y="240">mae</text>
+            <line class="conn-line" x1="510" y1="258" x2="505" y2="280"/>
+
+            <ellipse class="attr-ellipse" cx="620" cy="240" rx="35" ry="18"/>
+            <text class="attr-label" x="620" y="240">epochs</text>
+            <line class="conn-line" x1="600" y1="252" x2="565" y2="280"/>
+
+            <!-- Dataset TRAINS Model (M:1) -->
+            <polygon class="rel-diamond" points="340,305 380,278 420,305 380,332"/>
+            <text class="rel-label" x="380" y="306">TRAINS</text>
+            <line class="conn-line" x1="220" y1="305" x2="340" y2="305"/>
+            <line class="conn-line" x1="420" y1="305" x2="420" y2="305"/>
+            <text class="cardinality" x="240" y="298">M</text>
+            <text class="cardinality" x="415" y="298">1</text>
+
+            <!-- ========== PREDICTION ENTITY ========== -->
+            <rect class="entity" x="740" y="280" width="170" height="50" rx="4"/>
+            <text class="entity-label" x="825" y="305">PREDICTION</text>
+
+            <ellipse class="attr-ellipse" cx="720" cy="380" rx="48" ry="18"/>
+            <text class="pk-label" x="720" y="380">prediction_id</text>
+            <line class="conn-line" x1="745" y1="365" x2="770" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="830" cy="380" rx="48" ry="18"/>
+            <text class="attr-label" x="830" y="380">yield_pred</text>
+            <line class="conn-line" x1="830" y1="362" x2="830" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="940" cy="380" rx="48" ry="18"/>
+            <text class="attr-label" x="940" y="380">suitability</text>
+            <line class="conn-line" x1="915" y1="368" x2="890" y2="330"/>
+
+            <ellipse class="attr-ellipse" cx="1040" cy="310" rx="48" ry="18"/>
+            <text class="attr-label" x="1040" y="310">confidence</text>
+            <line class="conn-line" x1="995" y1="308" x2="910" y2="305"/>
+
+            <!-- Model GENERATES Prediction (1:M) -->
+            <polygon class="rel-diamond" points="640,305 680,278 720,305 680,332"/>
+            <text class="rel-label" x="680" y="306">GENERATES</text>
+            <line class="conn-line" x1="580" y1="305" x2="640" y2="305"/>
+            <line class="conn-line" x1="720" y1="305" x2="740" y2="305"/>
+            <text class="cardinality" x="600" y="298">1</text>
+            <text class="cardinality" x="735" y="298">M</text>
+
+            <!-- ========== RECOMMENDATION ENTITY ========== -->
+            <rect class="entity" x="450" y="520" width="200" height="50" rx="4"/>
+            <text class="entity-label" x="550" y="545">RECOMMENDATION</text>
+
+            <ellipse class="attr-ellipse" cx="350" cy="520" rx="40" ry="18"/>
+            <text class="pk-label" x="350" y="520">rec_id</text>
+            <line class="conn-line" x1="385" y1="528" x2="450" y2="540"/>
+
+            <ellipse class="attr-ellipse" cx="350" cy="570" rx="42" ry="18"/>
+            <text class="attr-label" x="350" y="570">crop_name</text>
+            <line class="conn-line" x1="388" y1="565" x2="450" y2="555"/>
+
+            <ellipse class="attr-ellipse" cx="450" cy="620" rx="30" ry="18"/>
+            <text class="attr-label" x="450" y="620">score</text>
+            <line class="conn-line" x1="465" y1="605" x2="500" y2="570"/>
+
+            <ellipse class="attr-ellipse" cx="550" cy="620" rx="30" ry="18"/>
+            <text class="attr-label" x="550" y="620">profit</text>
+            <line class="conn-line" x1="550" y1="602" x2="550" y2="570"/>
+
+            <ellipse class="attr-ellipse" cx="650" cy="620" rx="35" ry="18"/>
+            <text class="attr-label" x="650" y="620">revenue</text>
+            <line class="conn-line" x1="630" y1="605" x2="600" y2="570"/>
+
+            <ellipse class="attr-ellipse" cx="745" cy="570" rx="45" ry="18"/>
+            <text class="attr-label" x="745" y="570">total_cost</text>
+            <line class="conn-line" x1="705" y1="565" x2="650" y2="555"/>
+
+            <ellipse class="attr-ellipse" cx="745" cy="520" rx="45" ry="18"/>
+            <text class="attr-label" x="745" y="520">live_price</text>
+            <line class="conn-line" x1="705" y1="525" x2="650" y2="535"/>
+
+            <!-- Prediction PRODUCES Recommendation (1:M) -->
+            <polygon class="rel-diamond" points="785,430 825,403 865,430 825,457"/>
+            <text class="rel-label" x="825" y="431">PRODUCES</text>
+            <line class="conn-line" x1="825" y1="330" x2="825" y2="403"/>
+            <line class="conn-line" x1="825" y1="457" x2="625" y2="520"/>
+            <text class="cardinality" x="832" y="360">1</text>
+            <text class="cardinality" x="730" y="495">M</text>
+
+            <!-- Profile REQUESTS Recommendation (1:M) -->
+            <polygon class="rel-diamond" points="450,440 490,413 530,440 490,467"/>
+            <text class="rel-label" x="490" y="441">REQUESTS</text>
+            <line class="conn-line" x1="500" y1="90" x2="490" y2="413"/>
+            <line class="conn-line" x1="490" y1="467" x2="510" y2="520"/>
+            <text class="cardinality" x="505" y="200">1</text>
+            <text class="cardinality" x="505" y="500">M</text>
+
+            <!-- ========== MARKET_PRICE ENTITY ========== -->
+            <rect class="entity" x="810" y="60" width="170" height="50" rx="4"/>
+            <text class="entity-label" x="895" y="85">MARKET_PRICE</text>
+
+            <ellipse class="attr-ellipse" cx="810" cy="8" rx="40" ry="18"/>
+            <text class="pk-label" x="810" y="8">price_id</text>
+            <line class="conn-line" x1="835" y1="22" x2="860" y2="60"/>
+
+            <ellipse class="attr-ellipse" cx="910" cy="8" rx="35" ry="18"/>
+            <text class="attr-label" x="910" y="8">commodity</text>
+            <line class="conn-line" x1="905" y1="25" x2="900" y2="60"/>
+
+            <ellipse class="attr-ellipse" cx="1010" cy="35" rx="40" ry="18"/>
+            <text class="attr-label" x="1010" y="35">modal_price</text>
+            <line class="conn-line" x1="980" y1="45" x2="960" y2="65"/>
+
+            <ellipse class="attr-ellipse" cx="1010" cy="85" rx="32" ry="18"/>
+            <text class="attr-label" x="1010" y="85">source</text>
+            <line class="conn-line" x1="982" y1="82" x2="960" y2="80"/>
+
+            <!-- Recommendation USES Market_Price (M:M) -->
+            <polygon class="rel-diamond" points="730,145 770,118 810,145 770,172"/>
+            <text class="rel-label" x="770" y="146">USES</text>
+            <line class="conn-line" x1="895" y1="110" x2="810" y2="145"/>
+            <line class="conn-line" x1="730" y1="145" x2="650" y2="145"/>
+            <!-- connect down to recommendation -->
+            <line class="conn-line" x1="650" y1="145" x2="550" y2="520" stroke-dasharray="6,3"/>
+            <text class="cardinality" x="845" y="130">M</text>
+            <text class="cardinality" x="660" y="138">M</text>
+        </svg>
+    </div>
+
+    <!-- Detailed Entity Descriptions -->
+    <div class="desc">
+        <h2>Entity Descriptions</h2>
+
+        <h3>USER</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>user_id</u></td><td>UUID</td><td>PK</td><td>Unique identifier from Supabase Auth</td></tr>
+            <tr><td>email</td><td>VARCHAR</td><td>—</td><td>User's email address</td></tr>
+            <tr><td>name</td><td>VARCHAR</td><td>—</td><td>Display name</td></tr>
+        </table>
+
+        <h3>FARMER_PROFILE</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>profile_id</u></td><td>UUID</td><td>PK</td><td>Unique profile identifier</td></tr>
+            <tr><td>user_id</td><td>UUID</td><td>FK → USER</td><td>Owning user</td></tr>
+            <tr><td>state</td><td>VARCHAR</td><td>—</td><td>Indian state (e.g., Maharashtra)</td></tr>
+            <tr><td>soil_type</td><td>VARCHAR</td><td>—</td><td>Soil type (Loamy, Sandy, Clay, etc.)</td></tr>
+            <tr><td>acreage</td><td>DECIMAL</td><td>—</td><td>Farm size in hectares</td></tr>
+            <tr><td>budget</td><td>DECIMAL</td><td>—</td><td>Available budget in INR</td></tr>
+            <tr><td>season</td><td>VARCHAR</td><td>—</td><td>Target growing season</td></tr>
+        </table>
+
+        <h3>DATASET</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>dataset_id</u></td><td>INT</td><td>PK</td><td>Record row ID</td></tr>
+            <tr><td>crop_name</td><td>VARCHAR</td><td>—</td><td>Crop name (Rice, Wheat, etc.)</td></tr>
+            <tr><td>yield</td><td>DECIMAL</td><td>—</td><td>Yield per hectare (tonnes)</td></tr>
+            <tr><td>rainfall</td><td>DECIMAL</td><td>—</td><td>Annual rainfall (mm)</td></tr>
+            <tr><td>fertilizer</td><td>DECIMAL</td><td>—</td><td>Fertilizer per hectare (kg)</td></tr>
+            <tr><td>pesticide</td><td>DECIMAL</td><td>—</td><td>Pesticide per hectare (kg)</td></tr>
+        </table>
+
+        <h3>ML_MODEL</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>model_id</u></td><td>VARCHAR</td><td>PK</td><td>Model identifier (e.g., "crop-ml-model")</td></tr>
+            <tr><td>model_type</td><td>VARCHAR</td><td>—</td><td>"Deep Neural Network (TensorFlow.js)"</td></tr>
+            <tr><td>architecture</td><td>TEXT</td><td>—</td><td>Layer configuration string</td></tr>
+            <tr><td>loss_mse</td><td>DECIMAL</td><td>—</td><td>Final training loss</td></tr>
+            <tr><td>mae</td><td>DECIMAL</td><td>—</td><td>Mean Absolute Error</td></tr>
+            <tr><td>epochs</td><td>INT</td><td>—</td><td>Training epochs (100)</td></tr>
+        </table>
+
+        <h3>PREDICTION</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>prediction_id</u></td><td>INT</td><td>PK</td><td>Auto-increment prediction ID</td></tr>
+            <tr><td>model_id</td><td>VARCHAR</td><td>FK → ML_MODEL</td><td>Model used</td></tr>
+            <tr><td>yield_pred</td><td>DECIMAL</td><td>—</td><td>Predicted yield (tonnes/ha)</td></tr>
+            <tr><td>suitability</td><td>INT</td><td>—</td><td>Suitability score (0-100)</td></tr>
+            <tr><td>confidence</td><td>DECIMAL</td><td>—</td><td>Confidence level (0.5 or 0.85)</td></tr>
+        </table>
+
+        <h3>RECOMMENDATION</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>rec_id</u></td><td>INT</td><td>PK</td><td>Recommendation ID</td></tr>
+            <tr><td>profile_id</td><td>UUID</td><td>FK → FARMER_PROFILE</td><td>Requesting farmer</td></tr>
+            <tr><td>prediction_id</td><td>INT</td><td>FK → PREDICTION</td><td>Associated ML prediction</td></tr>
+            <tr><td>crop_name</td><td>VARCHAR</td><td>—</td><td>Recommended crop</td></tr>
+            <tr><td>score</td><td>DECIMAL</td><td>—</td><td>Final blended score (0-1)</td></tr>
+            <tr><td>profit</td><td>DECIMAL</td><td>—</td><td>Estimated profit (INR)</td></tr>
+            <tr><td>revenue</td><td>DECIMAL</td><td>—</td><td>Estimated revenue (INR)</td></tr>
+            <tr><td>total_cost</td><td>DECIMAL</td><td>—</td><td>Estimated total cost (INR)</td></tr>
+            <tr><td>live_price</td><td>DECIMAL</td><td>—</td><td>Market price per quintal (INR)</td></tr>
+        </table>
+
+        <h3>MARKET_PRICE</h3>
+        <table>
+            <tr><th>Attribute</th><th>Type</th><th>Key</th><th>Description</th></tr>
+            <tr><td><u>price_id</u></td><td>INT</td><td>PK</td><td>Price record ID</td></tr>
+            <tr><td>commodity</td><td>VARCHAR</td><td>—</td><td>Commodity/crop name</td></tr>
+            <tr><td>modal_price</td><td>DECIMAL</td><td>—</td><td>Market price per quintal (INR)</td></tr>
+            <tr><td>source</td><td>VARCHAR</td><td>—</td><td>"AGMARKNET" or "MSP 2024-25"</td></tr>
+        </table>
+
+        <h2>Relationships</h2>
+        <table>
+            <tr><th>Relationship</th><th>Entities</th><th>Cardinality</th><th>Description</th></tr>
+            <tr><td>HAS</td><td>USER — FARMER_PROFILE</td><td>1 : 1</td><td>Each user has exactly one farmer profile</td></tr>
+            <tr><td>TRAINS</td><td>DATASET — ML_MODEL</td><td>M : 1</td><td>Many dataset records train one model</td></tr>
+            <tr><td>GENERATES</td><td>ML_MODEL — PREDICTION</td><td>1 : M</td><td>One model generates many predictions</td></tr>
+            <tr><td>PRODUCES</td><td>PREDICTION — RECOMMENDATION</td><td>1 : M</td><td>One prediction can produce multiple recommendations</td></tr>
+            <tr><td>REQUESTS</td><td>FARMER_PROFILE — RECOMMENDATION</td><td>1 : M</td><td>One profile can request many recommendations</td></tr>
+            <tr><td>USES</td><td>RECOMMENDATION — MARKET_PRICE</td><td>M : M</td><td>Recommendations use multiple market prices; prices serve many recommendations</td></tr>
+        </table>
+    </div>
+</body>
+</html>

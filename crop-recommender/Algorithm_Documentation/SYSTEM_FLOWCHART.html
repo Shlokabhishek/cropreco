@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommender — System Flowchart</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a1a2e; padding: 2rem; }
+        h1 { text-align: center; color: #0d47a1; margin-bottom: 0.5rem; }
+        .subtitle { text-align: center; color: #546e7a; margin-bottom: 2rem; }
+        .diagram-container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        
+        /* Flowchart Symbol Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; margin: 1.5rem 0; padding: 1rem; background: #f5f5f5; border-radius: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+        .legend-symbol { width: 48px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+        .sym-oval { border: 2px solid #4caf50; background: #e8f5e9; border-radius: 14px; }
+        .sym-rect { border: 2px solid #1565c0; background: #e3f2fd; border-radius: 3px; }
+        .sym-diamond { width: 28px; height: 28px; border: 2px solid #e65100; background: #fff3e0; transform: rotate(45deg); }
+        .sym-para { border: 2px solid #7b1fa2; background: #f3e5f5; transform: skewX(-10deg); }
+        .sym-arrow { font-size: 1.3rem; color: #546e7a; }
+
+        /* SVG Flowchart Styles */
+        svg { width: 100%; height: auto; }
+        .fc-oval { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 2; rx: 25; ry: 25; }
+        .fc-rect { fill: #e3f2fd; stroke: #1565c0; stroke-width: 2; rx: 4; ry: 4; }
+        .fc-diamond { fill: #fff3e0; stroke: #e65100; stroke-width: 2; }
+        .fc-para { fill: #f3e5f5; stroke: #7b1fa2; stroke-width: 2; }
+        .fc-label { font-size: 12px; text-anchor: middle; dominant-baseline: middle; font-weight: 500; }
+        .fc-label-green { fill: #1b5e20; }
+        .fc-label-blue { fill: #0d47a1; }
+        .fc-label-orange { fill: #bf360c; }
+        .fc-label-purple { fill: #4a148c; }
+        .fc-arrow { stroke: #546e7a; stroke-width: 1.8; fill: none; marker-end: url(#arrowhead); }
+        .fc-arrow-yes { stroke: #2e7d32; stroke-width: 1.8; fill: none; marker-end: url(#arrowhead-green); }
+        .fc-arrow-no { stroke: #c62828; stroke-width: 1.8; fill: none; marker-end: url(#arrowhead-red); }
+        .fc-branch-label { font-size: 11px; font-weight: bold; }
+        .fc-branch-yes { fill: #2e7d32; }
+        .fc-branch-no { fill: #c62828; }
+        .fc-note { font-size: 10px; fill: #78909c; font-style: italic; text-anchor: middle; }
+    </style>
+</head>
+<body>
+    <h1>📊 System Flowchart</h1>
+    <p class="subtitle">Crop Recommender — Complete Processing Pipeline</p>
+
+    <div class="diagram-container">
+        <!-- Flowchart Symbol Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-symbol sym-oval"></div>
+                <span>Oval → Start / End</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-symbol sym-rect"></div>
+                <span>Rectangle → Process</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-symbol" style="width:auto;padding:0 4px;"><div class="sym-diamond"></div></div>
+                <span style="margin-left: 8px;">Diamond → Decision</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-symbol sym-para"></div>
+                <span>Parallelogram → Input/Output</span>
+            </div>
+            <div class="legend-item">
+                <span class="sym-arrow">→</span>
+                <span>Arrow → Flow Direction</span>
+            </div>
+        </div>
+
+        <!-- SVG Flowchart -->
+        <svg viewBox="0 0 800 2150" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#546e7a"/>
+                </marker>
+                <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#2e7d32"/>
+                </marker>
+                <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#c62828"/>
+                </marker>
+            </defs>
+
+            <!-- ===== START ===== -->
+            <ellipse class="fc-oval" cx="400" cy="40" rx="80" ry="30"/>
+            <text class="fc-label fc-label-green" x="400" y="40">START</text>
+
+            <!-- Arrow: Start → Data Input -->
+            <line class="fc-arrow" x1="400" y1="70" x2="400" y2="100"/>
+
+            <!-- ===== DATA INPUT (Parallelogram) ===== -->
+            <polygon class="fc-para" points="300,100 520,100 500,150 280,150"/>
+            <text class="fc-label fc-label-purple" x="400" y="118">User inputs farmer profile</text>
+            <text class="fc-label fc-label-purple" x="400" y="136">(state, soil, acreage, budget, season)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="150" x2="400" y2="185"/>
+
+            <!-- ===== LOAD CSV DATA (Process) ===== -->
+            <rect class="fc-rect" x="260" y="185" width="280" height="45"/>
+            <text class="fc-label fc-label-blue" x="400" y="200">Fetch crop_dataset.csv</text>
+            <text class="fc-label fc-label-blue" x="400" y="218">(19,691 records)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="230" x2="400" y2="265"/>
+
+            <!-- ===== DATA PREPROCESSING (Process) ===== -->
+            <rect class="fc-rect" x="230" y="265" width="340" height="80"/>
+            <text class="fc-label fc-label-blue" x="400" y="282" font-weight="bold">DATA PREPROCESSING</text>
+            <text class="fc-label fc-label-blue" x="400" y="300">• Parse TSV/CSV format</text>
+            <text class="fc-label fc-label-blue" x="400" y="316">• Calculate yield per hectare</text>
+            <text class="fc-label fc-label-blue" x="400" y="332">• Filter invalid records (yield ≤ 0 or > 100)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="345" x2="400" y2="380"/>
+
+            <!-- ===== FILTER BY STATE/SEASON (Process) ===== -->
+            <rect class="fc-rect" x="260" y="380" width="280" height="45"/>
+            <text class="fc-label fc-label-blue" x="400" y="395">Filter data by user's</text>
+            <text class="fc-label fc-label-blue" x="400" y="413">state and season</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="425" x2="400" y2="460"/>
+
+            <!-- ===== DECISION: Has matching data? ===== -->
+            <polygon class="fc-diamond" points="400,460 490,505 400,550 310,505"/>
+            <text class="fc-label fc-label-orange" x="400" y="500">Data</text>
+            <text class="fc-label fc-label-orange" x="400" y="515">found?</text>
+
+            <!-- YES branch: down -->
+            <line class="fc-arrow-yes" x1="400" y1="550" x2="400" y2="590"/>
+            <text class="fc-branch-label fc-branch-yes" x="415" y="572">YES</text>
+
+            <!-- NO branch: right → fallback loop -->
+            <line class="fc-arrow-no" x1="490" y1="505" x2="620" y2="505"/>
+            <text class="fc-branch-label fc-branch-no" x="550" y="498">NO</text>
+            <rect class="fc-rect" x="620" y="483" width="150" height="45" style="fill: #fff8e1; stroke: #f9a825;"/>
+            <text class="fc-label" x="695" y="500" style="fill:#e65100; font-size:11px;">Apply 4-level</text>
+            <text class="fc-label" x="695" y="515" style="fill:#e65100; font-size:11px;">fallback strategy</text>
+            <!-- Arrow back -->
+            <line class="fc-arrow" x1="695" y1="528" x2="695" y2="550"/>
+            <line class="fc-arrow" x1="695" y1="550" x2="400" y2="550"/>
+
+            <!-- ===== FETCH LIVE PRICES (Process) ===== -->
+            <rect class="fc-rect" x="260" y="590" width="280" height="45"/>
+            <text class="fc-label fc-label-blue" x="400" y="605">Fetch live market prices</text>
+            <text class="fc-label fc-label-blue" x="400" y="623">(AGMARKNET API → cache → MSP fallback)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="635" x2="400" y2="670"/>
+
+            <!-- ===== AGGREGATE CROP STATS (Process) ===== -->
+            <rect class="fc-rect" x="240" y="670" width="320" height="55"/>
+            <text class="fc-label fc-label-blue" x="400" y="688" font-weight="bold">CROP AGGREGATION</text>
+            <text class="fc-label fc-label-blue" x="400" y="706">Group by crop, compute median yield,</text>
+            <text class="fc-label fc-label-blue" x="400" y="720">avg fertilizer/pesticide per hectare</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="725" x2="400" y2="760"/>
+
+            <!-- ===== COST & REVENUE CALC (Process) ===== -->
+            <rect class="fc-rect" x="240" y="760" width="320" height="55"/>
+            <text class="fc-label fc-label-blue" x="400" y="778" font-weight="bold">FINANCIAL ANALYSIS</text>
+            <text class="fc-label fc-label-blue" x="400" y="796">Calculate cost, revenue, profit</text>
+            <text class="fc-label fc-label-blue" x="400" y="810">per crop × acreage</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="815" x2="400" y2="850"/>
+
+            <!-- ===== TRADITIONAL SCORING (Process) ===== -->
+            <rect class="fc-rect" x="230" y="850" width="340" height="55"/>
+            <text class="fc-label fc-label-blue" x="400" y="868" font-weight="bold">TRADITIONAL SCORING</text>
+            <text class="fc-label fc-label-blue" x="400" y="886">Score = budget(0.3) + profit(0.3)</text>
+            <text class="fc-label fc-label-blue" x="400" y="900">+ yield(0.2) + ROI(0.2)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="905" x2="400" y2="940"/>
+
+            <!-- ===== DECISION: ML Model Trained? ===== -->
+            <polygon class="fc-diamond" points="400,940 510,990 400,1040 290,990"/>
+            <text class="fc-label fc-label-orange" x="400" y="985">ML Model</text>
+            <text class="fc-label fc-label-orange" x="400" y="1002">trained?</text>
+
+            <!-- YES branch: left → ML prediction -->
+            <line class="fc-arrow-yes" x1="290" y1="990" x2="180" y2="990"/>
+            <text class="fc-branch-label fc-branch-yes" x="240" y="983">YES</text>
+
+            <!-- ML Prediction block -->
+            <rect class="fc-rect" x="40" y="960" width="140" height="60" style="fill: #e8f5e9; stroke: #2e7d32;"/>
+            <text class="fc-label fc-label-green" x="110" y="978" font-weight="bold">ML PREDICTION</text>
+            <text class="fc-label fc-label-green" x="110" y="996">Encode features</text>
+            <text class="fc-label fc-label-green" x="110" y="1010">Predict yield</text>
+
+            <!-- Arrow from ML → Suitability -->
+            <line class="fc-arrow" x1="110" y1="1020" x2="110" y2="1055"/>
+
+            <rect class="fc-rect" x="30" y="1055" width="160" height="45" style="fill: #e8f5e9; stroke: #2e7d32;"/>
+            <text class="fc-label fc-label-green" x="110" y="1072">Compute suitability</text>
+            <text class="fc-label fc-label-green" x="110" y="1088">score (0-100)</text>
+
+            <!-- Arrow from Suitability → Blend -->
+            <line class="fc-arrow" x1="190" y1="1077" x2="260" y2="1077"/>
+
+            <!-- Blend box -->
+            <rect class="fc-rect" x="260" y="1060" width="280" height="40" style="fill: #fff8e1; stroke: #f9a825;"/>
+            <text class="fc-label" x="400" y="1075" style="fill:#e65100; font-weight:bold; font-size:12px;">BLEND: 70% Traditional + 30% ML</text>
+            <text class="fc-label" x="400" y="1092" style="fill:#e65100; font-size:10px;">Final Score = trad×0.7 + ml×0.3</text>
+
+            <!-- NO branch: down directly to budget filter -->
+            <line class="fc-arrow-no" x1="400" y1="1040" x2="400" y2="1060"/>
+            <text class="fc-branch-label fc-branch-no" x="415" y="1053">NO (use trad. score only)</text>
+
+            <!-- Arrow from blend → budget filter -->
+            <line class="fc-arrow" x1="400" y1="1100" x2="400" y2="1140"/>
+
+            <!-- ===== BUDGET FILTERING (Process) ===== -->
+            <rect class="fc-rect" x="250" y="1140" width="300" height="55"/>
+            <text class="fc-label fc-label-blue" x="400" y="1158" font-weight="bold">BUDGET FILTERING</text>
+            <text class="fc-label fc-label-blue" x="400" y="1176">Progressive relaxation:</text>
+            <text class="fc-label fc-label-blue" x="400" y="1190">1.5× → 3× → no budget limit</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="1195" x2="400" y2="1230"/>
+
+            <!-- ===== DECISION: Multiple Crops? ===== -->
+            <polygon class="fc-diamond" points="400,1230 490,1270 400,1310 310,1270"/>
+            <text class="fc-label fc-label-orange" x="400" y="1265">Multi-crop</text>
+            <text class="fc-label fc-label-orange" x="400" y="1282">mode?</text>
+
+            <!-- YES branch right -->
+            <line class="fc-arrow-yes" x1="490" y1="1270" x2="600" y2="1270"/>
+            <text class="fc-branch-label fc-branch-yes" x="540" y="1263">YES</text>
+            <rect class="fc-rect" x="600" y="1248" width="170" height="45"/>
+            <text class="fc-label fc-label-blue" x="685" y="1265">Check companion</text>
+            <text class="fc-label fc-label-blue" x="685" y="1280">crop compatibility</text>
+            <!-- Arrow back -->
+            <line class="fc-arrow" x1="685" y1="1293" x2="685" y2="1330"/>
+            <line class="fc-arrow" x1="685" y1="1330" x2="400" y2="1330"/>
+
+            <!-- NO branch down -->
+            <line class="fc-arrow-no" x1="400" y1="1310" x2="400" y2="1350"/>
+            <text class="fc-branch-label fc-branch-no" x="415" y="1332">NO</text>
+
+            <!-- ===== RANK & SELECT TOP 8 (Process) ===== -->
+            <rect class="fc-rect" x="260" y="1350" width="280" height="45"/>
+            <text class="fc-label fc-label-blue" x="400" y="1365">Sort by final score</text>
+            <text class="fc-label fc-label-blue" x="400" y="1383">Select top 8 crops</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="1395" x2="400" y2="1430"/>
+
+            <!-- ===== CROP AVOIDANCE (Process) ===== -->
+            <rect class="fc-rect" x="225" y="1430" width="350" height="55"/>
+            <text class="fc-label fc-label-blue" x="400" y="1448" font-weight="bold">CROP AVOIDANCE ANALYSIS</text>
+            <text class="fc-label fc-label-blue" x="400" y="1466">Check soil/season/cost/weather risks</text>
+            <text class="fc-label fc-label-blue" x="400" y="1480">Flag crops with ≥ 2 risk factors</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="1485" x2="400" y2="1520"/>
+
+            <!-- ===== FARMING TYPE SCORING (Process) ===== -->
+            <rect class="fc-rect" x="240" y="1520" width="320" height="55"/>
+            <text class="fc-label fc-label-blue" x="400" y="1538" font-weight="bold">FARMING TYPE SCORING</text>
+            <text class="fc-label fc-label-blue" x="400" y="1556">Score 5 farming types based on</text>
+            <text class="fc-label fc-label-blue" x="400" y="1570">profile (Organic, Intensive, Mixed, etc.)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="1575" x2="400" y2="1610"/>
+
+            <!-- ===== OUTPUT DISPLAY (Parallelogram) ===== -->
+            <polygon class="fc-para" points="270,1610 550,1610 530,1720 250,1720"/>
+            <text class="fc-label fc-label-purple" x="400" y="1632" font-weight="bold">DISPLAY OUTPUT</text>
+            <text class="fc-label fc-label-purple" x="400" y="1650">• Recommended Crops (cards with score,</text>
+            <text class="fc-label fc-label-purple" x="400" y="1665">  profit, revenue, cost breakdown)</text>
+            <text class="fc-label fc-label-purple" x="400" y="1682">• Crops to Avoid (with risk reasons)</text>
+            <text class="fc-label fc-label-purple" x="400" y="1699">• Farming Types (ranked by suitability)</text>
+
+            <!-- Arrow -->
+            <line class="fc-arrow" x1="400" y1="1720" x2="400" y2="1760"/>
+
+            <!-- ===== DECISION: Refresh? ===== -->
+            <polygon class="fc-diamond" points="400,1760 480,1800 400,1840 320,1800"/>
+            <text class="fc-label fc-label-orange" x="400" y="1795">User</text>
+            <text class="fc-label fc-label-orange" x="400" y="1810">refresh?</text>
+
+            <!-- YES branch: loop back -->
+            <line class="fc-arrow-yes" x1="320" y1="1800" x2="160" y2="1800"/>
+            <text class="fc-branch-label fc-branch-yes" x="245" y="1793">YES</text>
+            <line class="fc-arrow-yes" x1="160" y1="1800" x2="160" y2="125"/>
+            <line class="fc-arrow-yes" x1="160" y1="125" x2="280" y2="125"/>
+
+            <!-- NO branch: down → End -->
+            <line class="fc-arrow-no" x1="400" y1="1840" x2="400" y2="1880"/>
+            <text class="fc-branch-label fc-branch-no" x="415" y="1862">NO</text>
+
+            <!-- ===== END ===== -->
+            <ellipse class="fc-oval" cx="400" cy="1910" rx="80" ry="30"/>
+            <text class="fc-label fc-label-green" x="400" y="1910">END</text>
+
+            <!-- ===== ANNOTATIONS / NOTES ===== -->
+            <text class="fc-note" x="110" y="945">TensorFlow.js Neural Network</text>
+            <text class="fc-note" x="695" y="478">4 levels: state+season → state → partial → nationwide</text>
+        </svg>
+    </div>
+
+    <!-- Textual Description -->
+    <div style="max-width: 1000px; margin: 2rem auto;">
+        <div style="background: white; border-radius: 10px; padding: 1.5rem 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+            <h2 style="color: #1565c0; margin-bottom: 1rem;">Flowchart Steps Summary</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #1565c0; color: white;">
+                    <th style="padding: 8px 12px; text-align: left;">Step</th>
+                    <th style="padding: 8px 12px; text-align: left;">Symbol</th>
+                    <th style="padding: 8px 12px; text-align: left;">Description</th>
+                    <th style="padding: 8px 12px; text-align: left;">Implementation File</th>
+                </tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">1</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Oval</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Start</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">App.tsx</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">2</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Parallelogram</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Data Input — User enters farmer profile</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">FarmerProfile.tsx</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">3</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Load crop_dataset.csv (19,691 records)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">useCropRecommendation.ts</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">4</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Data Preprocessing — Parse, clean, normalize</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts (parseCSVData)</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">5</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Filter by state/season</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts (recommendCrops)</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">6</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Diamond</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Decision — Data found? (4-level fallback)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">7</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Fetch live market prices via API</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts (fetchLiveMarketPrices)</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">8</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Crop aggregation (median yield, avg costs)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">9</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Financial analysis (cost, revenue, profit)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">10</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Traditional scoring (weighted formula)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">11</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Diamond</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Decision — ML Model trained?</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">modelTraining.ts (isModelAvailable)</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">12</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">ML Prediction — Neural network yield prediction</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">mlModel.ts (predict)</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">13</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Score blending (70% trad + 30% ML)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">14</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Budget filtering (progressive relaxation)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">15</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Diamond</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Decision — Multi-crop mode?</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">16</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rank & select top 8 recommendations</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">17</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Crop avoidance analysis (risk flagging)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts (identifyCropsToAvoid)</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">18</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Rectangle</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Farming type scoring</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">recommender.ts (recommendFarmingType)</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">19</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Parallelogram</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Output Display — Render UI components</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">CropRecommendations.tsx</td></tr>
+                <tr style="background:#f5f5f5;"><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">20</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Diamond</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Decision — User refresh? (loops to input)</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">useCropRecommendation.ts</td></tr>
+                <tr><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">21</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">Oval</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">End</td><td style="padding: 8px 12px; border-bottom: 1px solid #e0e0e0;">—</td></tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

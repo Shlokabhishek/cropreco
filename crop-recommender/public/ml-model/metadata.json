@@ -1,0 +1,16 @@
+{
+  "trainedAt": "2026-02-18T05:13:00.141Z",
+  "samples": 19377,
+  "epochs": 100,
+  "finalLoss": 93.68594360351562,
+  "finalMae": 4.244171142578125,
+  "finalValLoss": 91.30057525634766,
+  "features": [
+    "rainfall",
+    "fertilizer",
+    "pesticide",
+    "acreage",
+    "season_encoded",
+    "soil_encoded"
+  ]
+}

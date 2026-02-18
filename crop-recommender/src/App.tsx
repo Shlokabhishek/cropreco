@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./state/store";
 import { login, logout } from "./state/slices/authSlice";
@@ -19,8 +19,15 @@ function App() {
 	const user = useSelector((state: RootState) => state.auth.user);
 	const dispatch = useDispatch();
 	const [showLoginModal, setShowLoginModal] = useState(false);
+	const [mlModelReady, setMlModelReady] = useState(false);
 	const { t, formatMessage } = useLanguage();
-	const { cropsToAvoid, status } = useCropRecommendation();
+	const { cropsToAvoid, status, refresh } = useCropRecommendation();
+
+	const handleModelReady = useCallback(() => {
+		setMlModelReady(true);
+		// Trigger a fresh recommendation fetch now that ML model is ready
+		refresh();
+	}, [refresh]);
 
 	// Handle Supabase auth state changes and OAuth callback
 	useEffect(() => {
@@ -111,16 +118,36 @@ function App() {
 			</header>
 
 			<div style={{ marginBottom: "20px" }}>
-				<MLModelManager />
+				<MLModelManager onModelReady={handleModelReady} />
 			</div>
 
-			<div className="grid two">
-				<FarmerProfile />
-				<WeatherTrends />
-				<CropRecommendations />
-				<CropsToAvoid cropsToAvoid={cropsToAvoid} isLoading={status === "loading"} />
-				<PriceAnalysis />
-			</div>
+			{mlModelReady ? (
+				<div className="grid two">
+					<FarmerProfile />
+					<WeatherTrends />
+					<CropRecommendations />
+					<CropsToAvoid cropsToAvoid={cropsToAvoid} isLoading={status === "loading"} />
+					<PriceAnalysis />
+				</div>
+			) : (
+				<div style={{
+					textAlign: "center",
+					padding: "60px 20px",
+					color: "#64748b",
+					backgroundColor: "#f8fafc",
+					borderRadius: "12px",
+					border: "2px dashed #cbd5e1",
+					marginTop: "10px"
+				}}>
+					<div style={{ fontSize: "48px", marginBottom: "16px" }}>⏳</div>
+					<h3 style={{ margin: "0 0 8px 0", color: "#334155" }}>
+						Preparing ML-Powered Recommendations
+					</h3>
+					<p style={{ margin: 0, fontSize: "14px" }}>
+						The ML model is being trained on 19,000+ crop records. Recommendations will appear once training completes.
+					</p>
+				</div>
+			)}
 
 			{showLoginModal && !isAuthenticated && (
 				<div 

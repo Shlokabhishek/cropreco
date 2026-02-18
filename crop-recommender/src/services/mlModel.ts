@@ -301,7 +301,7 @@ export class CropMLModel {
   }
 
   /**
-   * Save model to browser storage
+   * Save model to browser storage (fallback, model is normally pre-trained)
    */
   async saveModel(modelName: string = 'crop-ml-model'): Promise<void> {
     if (!this.model) {
@@ -319,7 +319,31 @@ export class CropMLModel {
   }
 
   /**
-   * Load model from browser storage
+   * Load the pre-trained model from static files in public/ml-model/
+   * This is the primary loading method — the model is trained at build time.
+   */
+  async loadPretrainedModel(): Promise<void> {
+    try {
+      console.log('Loading pre-trained model from /ml-model/model.json ...');
+      this.model = await tf.loadLayersModel('/ml-model/model.json');
+
+      // Load scaler
+      const scalerResp = await fetch('/ml-model/scaler.json');
+      if (scalerResp.ok) {
+        this.scaler = await scalerResp.json();
+      }
+
+      this.isModelLoaded = true;
+      console.log('✅ Pre-trained ML model loaded successfully');
+    } catch (error) {
+      console.warn('Pre-trained model not found at /ml-model/, falling back to localStorage');
+      // Fallback: try localStorage (backwards compat)
+      await this.loadModel('crop-ml-model');
+    }
+  }
+
+  /**
+   * Load model from browser localStorage (fallback)
    */
   async loadModel(modelName: string = 'crop-ml-model'): Promise<void> {
     try {
@@ -332,11 +356,10 @@ export class CropMLModel {
       }
 
       this.isModelLoaded = true;
-      console.log(`Model loaded: ${modelName}`);
+      console.log(`Model loaded from localStorage: ${modelName}`);
     } catch (error) {
-      // Model not found is expected on first run - not an error
-      console.log('Model not found in storage (needs training)');
-      throw new Error('Model not found. Please train a model first.');
+      console.log('Model not found in localStorage either');
+      throw new Error('Model not found. Please run: npm run pretrain');
     }
   }
 
@@ -358,6 +381,83 @@ export class CropMLModel {
     this.model.summary();
     return 'Model summary printed to console';
   }
+}
+
+/**
+ * Returns a structured description of the ML model for display in the UI
+ */
+export type MLModelDescription = {
+  name: string;
+  type: string;
+  architecture: string;
+  inputFeatures: string[];
+  outputDescription: string;
+  trainingDetails: {
+    dataset: string;
+    datasetSize: string;
+    preprocessing: string;
+    featureSelection: string;
+    optimizer: string;
+    lossFunction: string;
+    epochs: number;
+    batchSize: number;
+    validationSplit: number;
+    normalization: string;
+  };
+  predictionFlow: string[];
+  recommendationLogic: string[];
+  evaluationMetrics: string[];
+};
+
+export function getModelDescription(): MLModelDescription {
+  return {
+    name: 'CropYield Neural Network',
+    type: 'Deep Neural Network (TensorFlow.js)',
+    architecture: 'Sequential: Dense(64,ReLU) → Dropout(0.2) → Dense(32,ReLU) → Dropout(0.2) → Dense(16,ReLU) → Dense(1,Linear)',
+    inputFeatures: [
+      'Annual Rainfall (mm)',
+      'Fertilizer Usage (kg/hectare)',
+      'Pesticide Usage (kg/hectare)',
+      'Acreage (hectares)',
+      'Season (encoded: Kharif=0, Rabi=1, Zaid=2, Summer=3, Winter=4, Autumn=5, Whole Year=6)',
+      'Soil Type (encoded: Loamy=0, Sandy=1, Clay=2, Red=3, Black=4, Alluvial=5)'
+    ],
+    outputDescription: 'Predicted crop yield (tonnes/hectare) → converted to suitability score (0-100)',
+    trainingDetails: {
+      dataset: 'Indian Agriculture Crop Production Dataset (data.gov.in)',
+      datasetSize: '19,000+ historical crop records across 36 Indian states',
+      preprocessing: 'Z-score normalization per feature, invalid yield filtering (≤0 or >100 removed), state-to-soil-type mapping',
+      featureSelection: '6 agronomic features selected: rainfall, fertilizer, pesticide, acreage, season, soil type',
+      optimizer: 'Adam (learning rate = 0.001)',
+      lossFunction: 'Mean Squared Error (MSE)',
+      epochs: 100,
+      batchSize: 32,
+      validationSplit: 0.2,
+      normalization: 'Z-score (mean/std computed per feature during training)'
+    },
+    predictionFlow: [
+      '1. User inputs farmer profile (state, soil, acreage, budget, season)',
+      '2. System encodes categorical features (season → integer, soil type → integer)',
+      '3. Input features normalized using stored z-score parameters (mean, std)',
+      '4. Normalized features passed through 4-layer neural network',
+      '5. Network outputs predicted yield (tonnes/hectare)',
+      '6. Yield converted to suitability score: min(100, max(0, yield × 10))',
+      '7. Confidence assigned: 0.85 for normal yields (0-15), 0.5 otherwise'
+    ],
+    recommendationLogic: [
+      '1. Traditional scoring: budget (30%) + profit (30%) + yield (20%) + ROI (20%)',
+      '2. ML suitability score computed for each candidate crop',
+      '3. Final score = 70% traditional score + 30% ML suitability score',
+      '4. Crops ranked by final blended score, top 8 returned',
+      '5. Intercropping compatibility checked for multi-crop mode',
+      '6. Budget filtering applied with progressive relaxation (1.5x → 3x → no limit)'
+    ],
+    evaluationMetrics: [
+      'Training Loss (MSE) — measures average squared prediction error',
+      'Mean Absolute Error (MAE) — average absolute difference between predicted and actual yield',
+      'Validation Loss — loss on held-out 20% validation set to detect overfitting'
+    ]
+  };
 }
 
 // Singleton instance
